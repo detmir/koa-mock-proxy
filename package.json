@@ -1,0 +1,11 @@
+{
+  "name": "koa-mock-proxy",
+  "version": "0.0.1",
+  "description": "A set of tools for creating proxy servers with possibility for record and replay responses.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alexey Baranov",
+  "license": "ISC"
+}
