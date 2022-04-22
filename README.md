@@ -20,10 +20,10 @@ You are free to use all possibilities of Koa (custom middlewares like [koa-route
 
 Server can work in the following modes:
 
-1. `record`. Server proxy requests to the `proxyUrl` and save responses to file.
+1. `record`. Server proxy requests to the `targetUrl` and save responses to file.
 2. `replay`. Server read response from file. If there are no matching file, 404 error.
-3. `replayOrProxy`. Server read response from file. If there are no matching file, go to `proxyUrl`.
-4. `proxy`. Server just proxy to the `proxyUrl`
+3. `replayOrProxy`. Server read response from file. If there are no matching file, go to `targetUrl`.
+4. `proxy`. Server just proxy to the `targetUrl`
 
 Mode can be determined :
 1. `mode` param to mockProxy middleware
@@ -41,7 +41,7 @@ The simplest implementation (proxy and record all requests):
   const server = new Koa();
   
   server.use(mockProxy({
-    proxyUrl: 'http://my-service.com/api'
+    targetUrl: 'http://my-service.com/api'
   }));
 
   server.listen(9000);
@@ -56,7 +56,7 @@ Proxy only a specific route:
   
   const server = new Koa();
   server.use(mockProxyConfig({
-    proxyUrl: 'http://my-service.com/api'
+    targetUrl: 'http://my-service.com/api'
   }))
 
   const userRouter = new Router();
@@ -69,13 +69,13 @@ Proxy only a specific route:
   // this route proxy to custom url
   userRouter.get(ssoUrl('/user/:id'), mockProxy({ 
     mode: 'record',
-    proxyUrl: 'http://my-service2.com/api'
+    targetUrl: 'http://my-service2.com/api'
   }));
   
   service.use(userRouter);
   
   server.use(koaMockProxy({
-    proxyUrl: 'http://my-service.com/api'
+    targetUrl: 'http://my-service.com/api'
   }));
   
   server.listen(9000);

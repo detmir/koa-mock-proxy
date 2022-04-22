@@ -15,7 +15,8 @@ const createProxyServer = async () => {
 
   app.use(
     mockProxy({
-      proxyUrl: targetServer,
+      mode: "proxy",
+      targetUrl: targetServer,
     })
   );
 
@@ -50,8 +51,6 @@ it("Should proxy normal JSON responses", async () => {
     .expect(200, {
       testArr: [2, "3"],
     });
-
-  await stop();
 });
 
 it("Should proxy images", async () => {

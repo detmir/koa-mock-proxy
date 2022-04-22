@@ -11,6 +11,7 @@
   "dependencies": {
     "@koa/router": "^10.1.1",
     "@types/koa": "^2.13.4",
+    "http-proxy-middleware": "^2.0.6",
     "koa": "^2.13.4"
   },
   "devDependencies": {
