@@ -27,7 +27,7 @@ Server can work in the following modes:
 
 Mode can be determined :
 1. `mode` param to mockProxy middleware
-2. Using middleware `proxyConfig` (must be defined before `mockProxy` middleware)
+2. Using middleware `mockProxyConfig` (must be defined before `mockProxy` middleware)
 3. Using environment variable `KOA_MOCK_PROXY_MODE`
 
 ## Examples
@@ -56,7 +56,7 @@ Proxy only a specific route:
   
   const server = new Koa();
   server.use(mockProxyConfig({
-    proxyurl: 'http://my-service.com/api'
+    proxyUrl: 'http://my-service.com/api'
   }))
 
   const userRouter = new Router();
@@ -66,8 +66,11 @@ Proxy only a specific route:
   // This route will replay or proxy
   userRouter.post(ssoUrl('/users'), mockProxy({ mode: 'replayOrProxy' }));
 
-  // this route always record
-  userRouter.get(ssoUrl('/user/:id'), mockProxy({ mode: 'record' }));
+  // this route proxy to custom url
+  userRouter.get(ssoUrl('/user/:id'), mockProxy({ 
+    mode: 'record',
+    proxyUrl: 'http://my-service2.com/api'
+  }));
   
   service.use(userRouter);
   
