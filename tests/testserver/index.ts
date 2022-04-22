@@ -26,7 +26,7 @@ router.get("/image", (ctx: Context) => {
 
 router.get("/500", (ctx: Context) => {
   ctx.status = 500;
-  ctx.body = "not found";
+  ctx.body = "Serious error";
 });
 
 export const createTestServer = () => {
