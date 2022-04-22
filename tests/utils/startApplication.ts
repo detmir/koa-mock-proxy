@@ -1,5 +1,5 @@
-import {AddressInfo, Server} from "net";
-import Application  from "koa";
+import { AddressInfo, Server } from "net";
+import Application from "koa";
 
 interface ListenResult {
   address: string;
@@ -14,7 +14,7 @@ export const startApplication = (app: Application): Promise<ListenResult> => {
       resolve({
         server,
         address: `http://[${address.address}]:${address.port}`,
-        stop: () => new Promise(resolve => server.close(resolve))
+        stop: () => new Promise((resolve) => server.close(resolve)),
       });
     });
   });
