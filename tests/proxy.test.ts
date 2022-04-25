@@ -1,44 +1,17 @@
-import Koa from "koa";
+import { getErrorBodyText, getJsonMock } from "./testserver";
+
 const request = require("supertest");
 const {
   promises: { readFile },
 } = require("fs");
-import { mockProxy } from "../src/mockProxy";
-import { createTestServer } from "./testserver";
-import { startApplication } from "./utils/startApplication";
+import { createTestMockServer } from "./utils/createTestMockServer";
 
-const createProxyServer = async () => {
-  const { address: targetServer, stop: stopTestServer } =
-    await createTestServer();
-
-  const app = new Koa();
-
-  app.use(
-    mockProxy({
-      mode: "proxy",
-      targetUrl: targetServer,
-    })
-  );
-
-  const {
-    server,
-    address,
-    stop: stopProxyServer,
-  } = await startApplication(app);
-
-  return {
-    server,
-    address,
-    stop: async () => {
-      await Promise.all([stopProxyServer(), stopTestServer()]);
-    },
-  };
-};
-
-let proxy: Awaited<ReturnType<typeof createProxyServer>> | null = null;
+let proxy: Awaited<ReturnType<typeof createTestMockServer>> | null = null;
 
 beforeAll(async () => {
-  proxy = await createProxyServer();
+  proxy = await createTestMockServer({
+    mode: "proxy",
+  });
 });
 
 afterAll(async () => {
@@ -46,11 +19,7 @@ afterAll(async () => {
 });
 
 it("Should proxy normal JSON responses", async () => {
-  await request(proxy.server)
-    .get("/")
-    .expect(200, {
-      testArr: [2, "3"],
-    });
+  await request(proxy.server).get("/").expect(200, getJsonMock());
 });
 
 it("Should proxy images", async () => {
@@ -60,5 +29,5 @@ it("Should proxy images", async () => {
 });
 
 it("Should proxy errors", async () => {
-  await request(proxy.server).get("/500").expect(500, "Serious error");
+  await request(proxy.server).get("/500").expect(500, getErrorBodyText());
 });

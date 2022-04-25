@@ -1,0 +1,10 @@
+{
+    "code": 500,
+    "requestUrl": "/500",
+    "headers": {
+        "content-type": "text/plain; charset=utf-8",
+        "content-length": "13",
+        "connection": "close"
+    },
+    "body": "Serious error"
+}

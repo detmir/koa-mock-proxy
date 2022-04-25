@@ -4,7 +4,7 @@
   "description": "A set of tools for creating proxy servers with possibility for record and replay responses.",
   "main": "index.js",
   "scripts": {
-    "test": "jest --forceExit"
+    "test": "jest"
   },
   "author": "Alexey Baranov",
   "license": "ISC",
