@@ -6,5 +6,6 @@
         "content-length": "13",
         "connection": "close"
     },
+    "bodyEncoding": "utf-8",
     "body": "Serious error"
 }

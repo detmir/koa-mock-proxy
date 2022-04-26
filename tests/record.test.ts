@@ -7,9 +7,9 @@ const {
   existsSync,
 } = require("fs");
 const request = require("supertest");
-import { createTestMockServer } from "./utils/createTestMockServer";
+import { startTestMockServer } from "./utils/startTestMockServer";
 
-let proxy: Awaited<ReturnType<typeof createTestMockServer>> | null = null;
+let proxy: Awaited<ReturnType<typeof startTestMockServer>> | null = null;
 
 const fixturesDirectory = __dirname + "/fixtures/";
 const recordDirectory = __dirname + "/../node_modules/mock_proxy_cache/";
@@ -26,48 +26,50 @@ const compareRecordedMockWithSnapshot = async (filename) => {
   expect(realContent).toMatchObject(expectedContent);
 };
 
-beforeAll(async () => {
-  // cleanup before running tests
-  if (existsSync(recordDirectory)) {
-    await rm(recordDirectory, { recursive: true });
-  }
+describe("Tests in record mode", () => {
+  beforeAll(async () => {
+    // cleanup before running tests
+    if (existsSync(recordDirectory)) {
+      await rm(recordDirectory, { recursive: true });
+    }
 
-  proxy = await createTestMockServer({
-    mode: "record",
-    recordDirectory,
+    proxy = await startTestMockServer({
+      mode: "record",
+      recordDirectory,
+    });
   });
-});
 
-afterAll(async () => {
-  jest.useRealTimers();
-  await proxy.stop();
-});
+  afterAll(async () => {
+    jest.useRealTimers();
+    await proxy.stop();
+  });
 
-it("Should record JSON correctly", async () => {
-  await request(proxy.server).get("/").expect(200, getJsonMock());
+  it("Should record JSON correctly", async () => {
+    await request(proxy.server).get("/").expect(200, getJsonMock());
 
-  await compareRecordedMockWithSnapshot("GET___root__.json");
-});
+    await compareRecordedMockWithSnapshot("GET___root__.json");
+  });
 
-it("Should record plain text correctly", async () => {
-  const image = await readFile(`${__dirname}/testServer/testImg.gif`);
+  it("Should record plain text correctly", async () => {
+    const image = await readFile(`${__dirname}/testServer/testImg.gif`);
 
-  await request(proxy.server).get("/image").expect(200, image);
+    await request(proxy.server).get("/image").expect(200, image);
 
-  await compareRecordedMockWithSnapshot("GET_image.json");
-});
+    await compareRecordedMockWithSnapshot("GET_image.json");
+  });
 
-it("Should record errors correctly", async () => {
-  await request(proxy.server).get("/500").expect(500, getErrorBodyText());
+  it("Should record errors correctly", async () => {
+    await request(proxy.server).get("/500").expect(500, getErrorBodyText());
 
-  await compareRecordedMockWithSnapshot("GET_500.json");
-});
+    await compareRecordedMockWithSnapshot("GET_500.json");
+  });
 
-it("Should record deeply nested routes correctly", async () => {
-  await request(proxy.server).get("/deep/level/nested/").expect(200);
-  // todo: wait for fs to write file. how to deal?
-  await new Promise((resolve) => setTimeout(resolve, 100));
-  // todo: how to distinct /nested/ and /nested?
+  it("Should record deeply nested routes correctly", async () => {
+    await request(proxy.server).get("/deep/level/nested/").expect(200);
+    // todo: wait for fs to write file. how to deal?
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    // todo: how to distinct /nested/ and /nested?
 
-  await compareRecordedMockWithSnapshot("deep/level/nested/GET_nested.json");
+    await compareRecordedMockWithSnapshot("deep/level/nested/GET_nested.json");
+  });
 });

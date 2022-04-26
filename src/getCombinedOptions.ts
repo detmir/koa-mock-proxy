@@ -7,7 +7,7 @@ export const getCombinedOptions = (
 ): MockProxyOptions => {
   // todo: extract options from context and env variables
 
-  if (!middlewareOptions.targetUrl) {
+  if (middlewareOptions.mode !== "replay" && !middlewareOptions.targetUrl) {
     throw new Error("Target url is required!");
   }
 

@@ -4,30 +4,32 @@ const request = require("supertest");
 const {
   promises: { readFile },
 } = require("fs");
-import { createTestMockServer } from "./utils/createTestMockServer";
+import { startTestMockServer } from "./utils/startTestMockServer";
 
-let proxy: Awaited<ReturnType<typeof createTestMockServer>> | null = null;
+let proxy: Awaited<ReturnType<typeof startTestMockServer>> | null = null;
 
-beforeAll(async () => {
-  proxy = await createTestMockServer({
-    mode: "proxy",
+describe("Tests in proxy mode", () => {
+  beforeAll(async () => {
+    proxy = await startTestMockServer({
+      mode: "proxy",
+    });
   });
-});
 
-afterAll(async () => {
-  await proxy.stop();
-});
+  afterAll(async () => {
+    await proxy.stop();
+  });
 
-it("Should proxy normal JSON responses", async () => {
-  await request(proxy.server).get("/").expect(200, getJsonMock());
-});
+  it("Should proxy normal JSON responses", async () => {
+    await request(proxy.server).get("/").expect(200, getJsonMock());
+  });
 
-it("Should proxy images", async () => {
-  const image = await readFile(`${__dirname}/testServer/testImg.gif`);
+  it("Should proxy images", async () => {
+    const image = await readFile(`${__dirname}/testServer/testImg.gif`);
 
-  await request(proxy.server).get("/image").expect(200, image);
-});
+    await request(proxy.server).get("/image").expect(200, image);
+  });
 
-it("Should proxy errors", async () => {
-  await request(proxy.server).get("/500").expect(500, getErrorBodyText());
+  it("Should proxy errors", async () => {
+    await request(proxy.server).get("/500").expect(500, getErrorBodyText());
+  });
 });

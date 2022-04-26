@@ -6,5 +6,6 @@
         "content-length": "10",
         "connection": "close"
     },
+    "bodyEncoding": "utf-8",
     "body": "plain text"
 }

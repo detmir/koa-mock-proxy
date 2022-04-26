@@ -4,7 +4,7 @@ import { mockProxy } from "../../src/mockProxy";
 import { startApplication } from "./startApplication";
 import { MockProxyUserOptions } from "../../src/types";
 
-export const createTestMockServer = async (options: MockProxyUserOptions) => {
+export const startTestMockServer = async (options: MockProxyUserOptions) => {
   const { address: targetServer, stop: stopTestServer } =
     await createTestServer();
 

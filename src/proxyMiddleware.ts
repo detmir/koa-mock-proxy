@@ -19,7 +19,7 @@ export const proxyMiddleware =
       selfHandleResponse: true,
       onProxyRes: responseInterceptor(async (responseBuffer) => {
         // генерирую событие данных, на которое может быть подписан наш автомок
-        ctx.res.emit("data", responseBuffer.toString("utf8"));
+        ctx.res.emit("data", responseBuffer);
         return responseBuffer;
       }),
     });

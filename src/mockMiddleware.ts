@@ -2,6 +2,7 @@ import fs from "fs";
 
 import { MockProxyOptions } from "./types";
 import { Context } from "koa";
+import { isTextContentType } from "./utils/isTextContentType";
 
 // заменяет имена файлов моков на безопасные
 // todo: is it really safe?
@@ -42,11 +43,7 @@ const readMock = async (ctx, options: MockProxyOptions) => {
     });
     fileContents = JSON.parse(file);
   } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error("Error while reading mock", e);
-
-    ctx.status = 404;
-    ctx.body = "Mock not found!";
+    // if mock not found we simply go to the next middleware
     return;
   }
 
@@ -56,31 +53,48 @@ const readMock = async (ctx, options: MockProxyOptions) => {
     ctx.set(headerName, headerValue);
   });
 
-  ctx.body = fileContents.body;
+  if (fileContents.bodyEncoding === "base64") {
+    ctx.body = Buffer.from(fileContents.body, "base64");
+  } else {
+    ctx.body = fileContents.body;
+  }
 };
 
-const encodeBody = (ctx: Context, body: unknown) => {
-  // todo: deal with binary data
-  // console.log(body);
+const encodeBody = (ctx: Context, body: Buffer) => {
+  const contentType = ctx.response.get("content-type") ?? "";
 
-  if (ctx.response.get("content-type")?.startsWith("application/json")) {
-    return JSON.parse(body as string);
+  if (contentType.startsWith("application/json")) {
+    return {
+      bodyEncoding: "json",
+      body: JSON.parse(body.toString("utf-8")),
+    };
   }
 
-  return body;
+  if (isTextContentType(contentType)) {
+    // todo: deal with another encodings
+    return {
+      bodyEncoding: "utf-8",
+      body: body.toString("utf-8"),
+    };
+  }
+
+  return {
+    bodyEncoding: "base64",
+    body: body.toString("base64"),
+  };
 };
 
 const writeMock = async (
   ctx: Context,
   options: MockProxyOptions,
-  content: unknown
+  content: Buffer
 ) => {
   const fileContents = {
     code: ctx.status,
     // записываем просто для информации, чтобы мы могли ориентироваться с какого запроса пришел был записан мок
     requestUrl: ctx.url,
     headers: ctx.response.headers,
-    body: encodeBody(ctx, content),
+    ...encodeBody(ctx, content),
   };
 
   const directory = getMockDirectory(ctx, options);

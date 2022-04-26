@@ -6,6 +6,7 @@
         "content-length": "19",
         "connection": "close"
     },
+    "bodyEncoding": "json",
     "body": {
         "testArr": [
             2,
