@@ -19,6 +19,10 @@ router.get("/", (ctx: Context) => {
   ctx.body = getJsonMock();
 });
 
+router.get("/notMockedResponse", (ctx: Context) => {
+  ctx.body = getJsonMock();
+});
+
 router.get("/plainText", (ctx: Context) => {
   ctx.type = "text/plain; charset=utf-8";
   ctx.body = getPlainTextMock();

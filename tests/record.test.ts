@@ -35,7 +35,7 @@ describe("Tests in record mode", () => {
 
     proxy = await startTestMockServer({
       mode: "record",
-      recordDirectory,
+      mocksDirectory: recordDirectory,
     });
   });
 

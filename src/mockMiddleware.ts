@@ -11,7 +11,7 @@ const encodeFilename = (filename) => filename.replace(/[:"<>?|\\]/g, "_");
 const getMockDirectory = (ctx, options: MockProxyOptions) => {
   const urlPath = ctx.path.split(/\/+/).slice(0, -1);
 
-  return `${options.recordDirectory}${urlPath.map(encodeFilename).join("/")}`;
+  return `${options.mocksDirectory}${urlPath.map(encodeFilename).join("/")}`;
 };
 
 const getMockFilename = (ctx, getFilename = (filename) => filename) => {

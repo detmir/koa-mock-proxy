@@ -14,7 +14,7 @@ describe("Tests in replay mode", () => {
     app.use(
       mockProxy({
         mode: "replay",
-        recordDirectory: __dirname + "/fixtures/",
+        mocksDirectory: __dirname + "/fixtures/",
       })
     );
     proxy = await startApplication(app);

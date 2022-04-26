@@ -13,7 +13,7 @@ export const mockProxy = (options: MockProxyUserOptions) => {
     );
 
     if (needMocks) {
-      if (!combinedOptions.recordDirectory) {
+      if (!combinedOptions.mocksDirectory) {
         throw new Error("Record directory is required!");
       }
 

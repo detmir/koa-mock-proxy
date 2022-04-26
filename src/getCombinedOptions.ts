@@ -14,7 +14,7 @@ export const getCombinedOptions = (
   return {
     mode: middlewareOptions.mode || "record",
     targetUrl: middlewareOptions.targetUrl || "",
-    recordDirectory: middlewareOptions.recordDirectory || null,
+    mocksDirectory: middlewareOptions.mocksDirectory || null,
     getMockFilename: middlewareOptions.getMockFilename,
   };
 };
