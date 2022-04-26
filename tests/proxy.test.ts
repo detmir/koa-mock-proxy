@@ -1,10 +1,13 @@
 import { getErrorBodyText, getJsonMock } from "./testserver";
 
-const request = require("supertest");
+import request from "supertest";
+import { startTestMockServer } from "./utils/startTestMockServer";
+
+import fs from "fs";
+
 const {
   promises: { readFile },
-} = require("fs");
-import { startTestMockServer } from "./utils/startTestMockServer";
+} = fs;
 
 let proxy: Awaited<ReturnType<typeof startTestMockServer>> | null = null;
 

@@ -1,13 +1,15 @@
 /**
  * @jest-environment node
  */
+import fs from "fs";
+import request from "supertest";
 import { getErrorBodyText, getJsonMock } from "./testserver";
+import { startTestMockServer } from "./utils/startTestMockServer";
+
 const {
   promises: { readFile, rm },
   existsSync,
-} = require("fs");
-const request = require("supertest");
-import { startTestMockServer } from "./utils/startTestMockServer";
+} = fs;
 
 let proxy: Awaited<ReturnType<typeof startTestMockServer>> | null = null;
 
@@ -16,11 +18,11 @@ const recordDirectory = __dirname + "/../node_modules/mock_proxy_cache/";
 
 const compareRecordedMockWithSnapshot = async (filename) => {
   const expectedContent = JSON.parse(
-    await readFile(`${fixturesDirectory}${filename}`)
+    await readFile(`${fixturesDirectory}${filename}`, "utf-8")
   );
 
   const realContent = JSON.parse(
-    await readFile(`${recordDirectory}${filename}`)
+    await readFile(`${recordDirectory}${filename}`, "utf-8")
   );
 
   expect(realContent).toMatchObject(expectedContent);

@@ -1,9 +1,9 @@
-const request = require("supertest");
-import { getErrorBodyText, getJsonMock, getPlainTextMock } from "./testserver";
+import request from "supertest";
 import Koa from "koa";
+import { readFile } from "fs/promises";
+import { getErrorBodyText, getJsonMock, getPlainTextMock } from "./testserver";
 import { mockProxy } from "../src/mockProxy";
 import { startApplication } from "./utils/startApplication";
-import { readFile } from "fs/promises";
 
 let proxy: Awaited<ReturnType<typeof startApplication>> | null = null;
 

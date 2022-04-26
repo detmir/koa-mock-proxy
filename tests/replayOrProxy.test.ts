@@ -1,6 +1,6 @@
 import { startTestMockServer } from "./utils/startTestMockServer";
 import { getJsonMock } from "./testserver";
-const request = require("supertest");
+import request from "supertest";
 
 let proxy: Awaited<ReturnType<typeof startTestMockServer>> | null = null;
 
