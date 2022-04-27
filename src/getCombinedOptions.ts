@@ -5,16 +5,20 @@ export const getCombinedOptions = (
   ctx: Context,
   middlewareOptions: MockProxyUserOptions
 ): MockProxyOptions => {
-  // todo: extract options from context and env variables
+  // todo: extract options from env variables
+  const combinedOptions: MockProxyOptions = {
+    ...(ctx.mockProxyConfig ?? {}),
+    ...(middlewareOptions ?? {}),
+  };
 
-  if (middlewareOptions.mode !== "replay" && !middlewareOptions.targetUrl) {
+  if (combinedOptions.mode !== "replay" && !combinedOptions.targetUrl) {
     throw new Error("Target url is required!");
   }
 
   return {
-    mode: middlewareOptions.mode || "record",
-    targetUrl: middlewareOptions.targetUrl || "",
-    mocksDirectory: middlewareOptions.mocksDirectory || null,
-    getMockFilename: middlewareOptions.getMockFilename,
+    mode: combinedOptions.mode || "record",
+    targetUrl: combinedOptions.targetUrl || "",
+    mocksDirectory: combinedOptions.mocksDirectory || null,
+    getMockFilename: combinedOptions.getMockFilename,
   };
 };

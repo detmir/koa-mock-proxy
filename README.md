@@ -37,9 +37,9 @@ The simplest implementation (proxy and record all requests):
 ```js
   import Koa from 'koa';
   import mockProxy from 'koa-mock-proxy';
-  
+
   const server = new Koa();
-  
+
   server.use(mockProxy({
     targetUrl: 'http://my-service.com/api'
   }));
@@ -53,7 +53,7 @@ Proxy only a specific route:
   import Koa from 'koa';
   import Router from '@koa/router';
   import { mockProxy, mockProxyConfig } from 'koa-mock-proxy';
-  
+
   const server = new Koa();
   server.use(mockProxyConfig({
     targetUrl: 'http://my-service.com/api'
@@ -67,16 +67,16 @@ Proxy only a specific route:
   userRouter.post(ssoUrl('/users'), mockProxy({ mode: 'replayOrProxy' }));
 
   // this route proxy to custom url
-  userRouter.get(ssoUrl('/user/:id'), mockProxy({ 
+  userRouter.get(ssoUrl('/user/:id'), mockProxy({
     mode: 'record',
     targetUrl: 'http://my-service2.com/api'
   }));
-  
-  service.use(userRouter);
-  
+
+  server.use(userRouter);
+
   server.use(koaMockProxy({
     targetUrl: 'http://my-service.com/api'
   }));
-  
+
   server.listen(9000);
 ```

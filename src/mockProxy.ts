@@ -4,12 +4,12 @@ import { getCombinedOptions } from "./getCombinedOptions";
 import { proxyMiddleware } from "./proxyMiddleware";
 import { mockMiddleware } from "./mockMiddleware";
 
-export const mockProxy = (options: MockProxyUserOptions) => {
+export const mockProxy = (options: MockProxyUserOptions = {}) => {
   return async (ctx: Context, next: Next) => {
     const combinedOptions = getCombinedOptions(ctx, options);
 
     const needMocks = ["record", "replay", "replayOrProxy"].includes(
-      options.mode
+      combinedOptions.mode
     );
 
     if (needMocks) {
