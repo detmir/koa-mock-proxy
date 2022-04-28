@@ -1,4 +1,4 @@
-import { getCombinedOptions } from "../src/getCombinedOptions";
+import { getCombinedOptions } from "../src/utils/getCombinedOptions";
 import { Context } from "koa";
 
 describe("Read config from env", () => {

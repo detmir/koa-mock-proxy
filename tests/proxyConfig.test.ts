@@ -1,7 +1,6 @@
 import { createTestServer, getJsonMock } from "./testserver";
 import Koa from "koa";
-import { mockProxy } from "../src/mockProxy";
-import { mockProxyConfig } from "../src/mockProxyConfig";
+import { mockProxyMiddleware, mockProxyConfigMiddleware } from "../src";
 import { startApplication } from "./utils/startApplication";
 import Router from "@koa/router";
 import { Server } from "net";
@@ -19,17 +18,17 @@ describe("Global proxy config tests", () => {
     const app = new Koa();
 
     app.use(
-      mockProxyConfig({
+      mockProxyConfigMiddleware({
         targetUrl: targetServer,
         mode: "proxy",
       })
     );
 
     const testRouter = new Router();
-    testRouter.get("/notMockedResponse", mockProxy());
+    testRouter.get("/notMockedResponse", mockProxyMiddleware());
     testRouter.get(
       "(.*)",
-      mockProxy({
+      mockProxyMiddleware({
         targetUrl: "fakeUrl",
         mocksDirectory: getFixturesDirectory(),
         mode: "replay",

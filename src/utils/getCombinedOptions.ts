@@ -1,4 +1,4 @@
-import { MockProxyOptions, MockProxyUserOptions } from "./types";
+import { MockProxyOptions, MockProxyUserOptions } from "../types";
 import { Context } from "koa";
 
 const validateOptions = (options: MockProxyOptions) => {

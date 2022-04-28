@@ -1,10 +1,10 @@
 import { Context, Next } from "koa";
-import { MockProxyUserOptions } from "./types";
-import { getCombinedOptions } from "./getCombinedOptions";
+import { MockProxyUserOptions } from "../types";
+import { getCombinedOptions } from "../utils/getCombinedOptions";
 import { proxyMiddleware } from "./proxyMiddleware";
 import { mockMiddleware } from "./mockMiddleware";
 
-export const mockProxy = (options: MockProxyUserOptions = {}) => {
+export const mockProxyMiddleware = (options: MockProxyUserOptions = {}) => {
   return async (ctx: Context, next: Next) => {
     const combinedOptions = getCombinedOptions(ctx, options);
 

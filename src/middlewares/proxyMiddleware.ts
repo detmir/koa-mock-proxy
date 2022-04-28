@@ -2,7 +2,7 @@ import {
   createProxyMiddleware,
   responseInterceptor,
 } from "http-proxy-middleware";
-import { MockProxyOptions } from "./types";
+import { MockProxyOptions } from "../types";
 import { Context, Next } from "koa";
 
 export const proxyMiddleware =

@@ -2,7 +2,7 @@ import request from "supertest";
 import Koa from "koa";
 import { readFile } from "fs/promises";
 import { getErrorBodyText, getJsonMock, getPlainTextMock } from "./testserver";
-import { mockProxy } from "../src/mockProxy";
+import { mockProxyMiddleware } from "../src";
 import { startApplication } from "./utils/startApplication";
 
 let proxy: Awaited<ReturnType<typeof startApplication>> | null = null;
@@ -12,7 +12,7 @@ describe("Tests in replay mode", () => {
     const app = new Koa();
 
     app.use(
-      mockProxy({
+      mockProxyMiddleware({
         mode: "replay",
         mocksDirectory: __dirname + "/fixtures/",
       })

@@ -1,8 +1,8 @@
 import fs from "fs";
 
-import { MockProxyOptions } from "./types";
+import { MockProxyOptions } from "../types";
 import { Context } from "koa";
-import { isTextContentType } from "./utils/isTextContentType";
+import { isTextContentType } from "../utils/isTextContentType";
 
 // заменяет имена файлов моков на безопасные
 // todo: is it really safe?
