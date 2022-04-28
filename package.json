@@ -14,7 +14,8 @@
     "@koa/router": "^10.1.1",
     "@types/koa": "^2.13.4",
     "http-proxy-middleware": "^2.0.6",
-    "koa": "^2.13.4"
+    "koa": "^2.13.4",
+    "koa-compose": "^4.1.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.11",

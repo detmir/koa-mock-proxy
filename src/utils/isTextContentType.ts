@@ -6,6 +6,10 @@ const safeContentTypes = [
   /^application\/svg/,
 ];
 
-export const isTextContentType = (contentType) => {
+/**
+ * Return is contentType can be safely stored as a string
+ * @param contentType
+ */
+export const isTextContentType = (contentType: string) => {
   return safeContentTypes.some((regexp) => regexp.test(contentType));
 };
