@@ -1,4 +1,4 @@
-import { getCombinedOptions } from "../src/utils/getCombinedOptions";
+import { getCombinedOptions } from "../getCombinedOptions";
 import { Context } from "koa";
 
 describe("Read config from env", () => {
@@ -8,6 +8,7 @@ describe("Read config from env", () => {
       expect(
         getCombinedOptions({} as Context, {
           targetUrl: "test",
+          mocksDirectory: __dirname,
         })
       ).toHaveProperty("mode", "record");
     });
@@ -16,6 +17,7 @@ describe("Read config from env", () => {
       process.env.KOA_MOCK_PROXY_MODE = "record";
       expect(
         getCombinedOptions({} as Context, {
+          mocksDirectory: __dirname,
           targetUrl: "test",
           mode: "replay",
         })
@@ -26,10 +28,9 @@ describe("Read config from env", () => {
   describe("Read KOA_MOCK_PROXY_TARGET_URL", () => {
     it("Target url taken from env", () => {
       process.env.KOA_MOCK_PROXY_TARGET_URL = "http://test";
-      expect(getCombinedOptions({} as Context, {})).toHaveProperty(
-        "targetUrl",
-        "http://test"
-      );
+      expect(
+        getCombinedOptions({} as Context, { mocksDirectory: __dirname })
+      ).toHaveProperty("targetUrl", "http://test");
     });
 
     it("Target url from env can be overwritten", () => {
@@ -37,6 +38,7 @@ describe("Read config from env", () => {
       expect(
         getCombinedOptions({} as Context, {
           targetUrl: "http://overwriten",
+          mocksDirectory: __dirname,
         })
       ).toHaveProperty("targetUrl", "http://overwriten");
     });

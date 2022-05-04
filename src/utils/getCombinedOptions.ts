@@ -8,6 +8,10 @@ const validateOptions = (options: MockProxyOptions) => {
     );
   }
 
+  if (options.mode !== "proxy" && !options.mocksDirectory) {
+    throw new Error("mocksDirectory is required!");
+  }
+
   const availableModes: typeof options["mode"][] = [
     "record",
     "replay",
@@ -32,6 +36,7 @@ export const getCombinedOptions = (
     mode: process.env.KOA_MOCK_PROXY_MODE ?? "replayOrProxy",
     targetUrl: process.env.KOA_MOCK_PROXY_TARGET_URL ?? "",
     mocksDirectory: process.env.KOA_MOCK_PROXY_DIRECTORY ?? null,
+    recordOptions: {},
   };
 
   const combinedOptions: MockProxyOptions = {

@@ -3,42 +3,15 @@ import fs from "fs";
 import { MockProxyOptions } from "../types";
 import { Context } from "koa";
 import { isTextContentType } from "../utils/isTextContentType";
-
-// заменяет имена файлов моков на безопасные
-// todo: is it really safe?
-const encodeFilename = (filename) => filename.replace(/[:"<>?|\\]/g, "_");
-
-const getMockDirectory = (ctx, options: MockProxyOptions) => {
-  const urlPath = ctx.path.split(/\/+/).slice(0, -1);
-
-  return `${options.mocksDirectory}${urlPath.map(encodeFilename).join("/")}`;
-};
-
-const getMockFilename = (ctx, getFilename = (filename) => filename) => {
-  const urlPath = ctx.path.split("/").filter(Boolean);
-  const requestMethod = ctx.method;
-
-  const filename = getFilename({
-    basename: `${requestMethod}_${encodeFilename(
-      urlPath[urlPath.length - 1] ?? "__root__"
-    )}`,
-    extension: "json",
-    ctx,
-  });
-
-  return `${filename.basename}.${filename.extension}`;
-};
+import { FileLocator } from "../utils/FileLocator";
 
 const readMock = async (ctx, options: MockProxyOptions) => {
+  const fileLocator = new FileLocator(options, ctx);
+
   let fileContents;
 
   try {
-    const filePath = `${getMockDirectory(ctx, options)}/${getMockFilename(
-      ctx,
-      options.getMockFilename
-    )}`;
-
-    const file = await fs.promises.readFile(filePath, {
+    const file = await fs.promises.readFile(fileLocator.getMockPath(), {
       encoding: "utf-8",
     });
     fileContents = JSON.parse(file);
@@ -89,6 +62,8 @@ const writeMock = async (
   options: MockProxyOptions,
   content: Buffer
 ) => {
+  const fileLocator = new FileLocator(options, ctx);
+
   const fileContents = {
     code: ctx.status,
     // записываем просто для информации, чтобы мы могли ориентироваться с какого запроса пришел был записан мок
@@ -97,16 +72,16 @@ const writeMock = async (
     ...encodeBody(ctx, content),
   };
 
-  const directory = getMockDirectory(ctx, options);
-
   try {
-    await fs.promises.mkdir(directory, { recursive: true });
+    await fs.promises.mkdir(fileLocator.getMockDirectory(), {
+      recursive: true,
+    });
   } catch (e) {
     console.error(e);
   }
 
   await fs.promises.writeFile(
-    `${directory}/${getMockFilename(ctx, options.getMockFilename)}`,
+    fileLocator.getMockPath(),
     JSON.stringify(fileContents, null, 4)
   );
 };
