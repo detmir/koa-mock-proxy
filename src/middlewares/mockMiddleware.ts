@@ -1,25 +1,21 @@
 import fs from "fs";
 
-import { MockProxyOptions } from "../types";
+import {MockFileContents, MockProxyOptions} from "../types";
 import { Context } from "koa";
 import { isTextContentType } from "../utils/isTextContentType";
 import { FileLocator } from "../utils/FileLocator";
 
-const readMock = async (ctx, options: MockProxyOptions) => {
+const readMock = async (ctx, options: MockProxyOptions): Promise<MockFileContents>  => {
   const fileLocator = new FileLocator(options, ctx);
 
-  let fileContents;
-
-  try {
     const file = await fs.promises.readFile(fileLocator.getMockPath(), {
       encoding: "utf-8",
     });
-    fileContents = JSON.parse(file);
-  } catch (e) {
-    // if mock not found we simply go to the next middleware
-    return;
-  }
 
+    return JSON.parse(file);
+}
+
+const putMockToCtx = (ctx, fileContents: any) => {
   ctx.status = fileContents.code;
 
   Object.entries(fileContents.headers).forEach(([headerName, headerValue]) => {
@@ -31,9 +27,21 @@ const readMock = async (ctx, options: MockProxyOptions) => {
   } else {
     ctx.body = fileContents.body;
   }
+}
+
+const replyWithMock = async (ctx, options: MockProxyOptions) => {
+  let fileContents;
+
+  try {
+    fileContents = await readMock(ctx, options);
+  } catch (e) {
+    return;
+  }
+
+  putMockToCtx(ctx, fileContents);
 };
 
-const encodeBody = (ctx: Context, body: Buffer) => {
+const encodeBody = (ctx: Context, body: Buffer): Pick<MockFileContents, 'body' | 'bodyEncoding'> => {
   const contentType = ctx.response.get("content-type") ?? "";
 
   if (contentType.startsWith("application/json")) {
@@ -57,6 +65,14 @@ const encodeBody = (ctx: Context, body: Buffer) => {
   };
 };
 
+export const isCanOverwriteMock = (options: MockProxyOptions, fileContents: any) => {
+  if (fileContents?.hasOwnProperty('overwrite')) {
+    return fileContents.overwrite;
+  }
+
+  return options.recordOptions.overwrite ?? false;
+};
+
 const writeMock = async (
   ctx: Context,
   options: MockProxyOptions,
@@ -64,13 +80,22 @@ const writeMock = async (
 ) => {
   const fileLocator = new FileLocator(options, ctx);
 
-  const fileContents = {
+  const fileContents: MockFileContents = {
     code: ctx.status,
     // записываем просто для информации, чтобы мы могли ориентироваться с какого запроса пришел был записан мок
     requestUrl: ctx.url,
     headers: ctx.response.headers,
     ...encodeBody(ctx, content),
   };
+
+  try {
+    let existingMockFileContent = await readMock(ctx, options);
+    const canWrite = isCanOverwriteMock(options, existingMockFileContent);
+
+    if (!canWrite) {
+      return;
+    }
+  } catch (e) {}
 
   try {
     await fs.promises.mkdir(fileLocator.getMockDirectory(), {
@@ -94,5 +119,5 @@ export const mockMiddleware =
       return next();
     }
 
-    return readMock(ctx, options);
+    return replyWithMock(ctx, options);
   };

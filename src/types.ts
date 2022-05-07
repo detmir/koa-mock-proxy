@@ -1,4 +1,5 @@
 import { Context } from "koa";
+import {OutgoingHttpHeaders} from "http";
 
 export type MockProxyUserOptions = Partial<MockProxyOptions>;
 
@@ -26,5 +27,39 @@ export interface MockProxyOptions {
      * You can use different postfixes depending on a scenario or an incoming request (request body, headers, etc)
      */
     getFilenamePostfix?: (ctx: Context) => string;
+    /**
+     * Determines is mock server can overwrite file in record mode
+     * You can also redefine this value is mock file by adding file "overwrite"
+     */
+    overwrite: false
   };
+}
+
+export interface MockFileContents {
+  /**
+   * Http status code
+   */
+  code: number;
+
+  /**
+   * An exact recorded url (using just for information)
+   */
+  requestUrl: string;
+
+  /**
+   * Response headers
+   */
+  headers: OutgoingHttpHeaders;
+
+  /**
+   * Determines how body field was encoded in current file
+   */
+  bodyEncoding: "utf-8" | "base64" | "json";
+
+  /**
+   * Response body
+   */
+  body: string;
+
+  overwrite?: boolean;
 }
