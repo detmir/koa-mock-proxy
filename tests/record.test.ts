@@ -74,4 +74,17 @@ describe("Tests in record mode", () => {
 
     await compareRecordedMockWithSnapshot("deep/level/nested/GET_nested.json");
   });
+
+  describe("Check overwriting files",  () => {
+    it ("Should not overwrite files by default", async () => {
+      await request(proxy.server).get("/dynamicResponse").expect(200, "defaultValue");
+      await request(proxy.server).put("/dynamicResponse").send("overwrittenValue").expect(200);
+
+      const realContent = JSON.parse(
+        await readFile(`${recordDirectory}GET_dynamicResponse.json`, "utf-8")
+      );
+
+      expect(realContent.body).toBe("defaultValue");
+    });
+  });
 });

@@ -27,6 +27,7 @@
     "@typescript-eslint/parser": "^5.21.0",
     "eslint": "^8.14.0",
     "jest": "^27.5.1",
+    "koa-bodyparser": "^4.3.0",
     "prettier": "^2.6.2",
     "superagent": "^7.1.2",
     "supertest": "^6.2.2",

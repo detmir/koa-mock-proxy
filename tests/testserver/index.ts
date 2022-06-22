@@ -1,5 +1,5 @@
-import Application from "koa";
-import { Context } from "koa";
+import Application, { Context } from "koa";
+import bodyParser from "koa-bodyparser";
 
 import KoaRouter from "@koa/router";
 import { createReadStream } from "fs";
@@ -42,6 +42,20 @@ router.get("/deep/level/nested/", (ctx: Context) => {
 router.get("/500", (ctx: Context) => {
   ctx.status = 500;
   ctx.body = getErrorBodyText();
+});
+
+let dynamicResponse = 'defaultValue'
+
+router.get("/dynamicResponse", (ctx: Context) => {
+  ctx.type = "text/plain; charset=utf-8";
+  ctx.body = dynamicResponse;
+});
+
+router.put("/dynamicResponse", bodyParser(), (ctx: Context) => {
+  // @ts-ignore
+  dynamicResponse = ctx.request.body;
+  ctx.type = "text/plain; charset=utf-8";
+  ctx.body = dynamicResponse;
 });
 
 export const createTestServer = () => {
