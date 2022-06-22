@@ -1,7 +1,9 @@
 import { Context } from "koa";
 import {OutgoingHttpHeaders} from "http";
 
-export type MockProxyUserOptions = Partial<MockProxyOptions>;
+export type MockProxyUserOptions = Partial<MockProxyOptions> & {
+  recordOptions?: Partial<MockProxyOptions['recordOptions']>
+};
 
 export interface MockProxyOptions {
   /**
