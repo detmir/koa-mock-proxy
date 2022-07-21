@@ -25,6 +25,10 @@ export const mockProxyMiddleware = (options: MockProxyUserOptions = {}) => {
     );
 
     if (needProxy) {
+      if (combinedOptions.mode === 'replayOrProxy' && ctx.response.headerSent) {
+        return;
+      }
+
       await proxyMiddleware(combinedOptions)(ctx, next);
     }
   };

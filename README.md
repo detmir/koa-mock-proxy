@@ -80,3 +80,7 @@ Proxy only a specific route:
 
   server.listen(9000);
 ```
+
+## Debugging
+
+You can set env variable `DEBUG_PROXY=true` if you want to see in console all requests coming through mock server.

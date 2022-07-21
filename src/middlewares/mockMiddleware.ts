@@ -4,6 +4,7 @@ import {MockFileContents, MockProxyOptions} from "../types";
 import { Context } from "koa";
 import { isTextContentType } from "../utils/isTextContentType";
 import { FileLocator } from "../utils/FileLocator";
+import {log} from "../utils/log";
 
 const readMock = async (ctx, options: MockProxyOptions): Promise<MockFileContents>  => {
   const fileLocator = new FileLocator(options, ctx);
@@ -37,6 +38,8 @@ const replyWithMock = async (ctx, options: MockProxyOptions) => {
   } catch (e) {
     return;
   }
+  log('info', `[Read mock] ${ctx.url}`);
+
 
   putMockToCtx(ctx, fileContents);
 };
@@ -98,6 +101,8 @@ const writeMock = async (
   } catch (e) {}
 
   try {
+    log('info', `[Write mock] ${ctx.url}`);
+
     await fs.promises.mkdir(fileLocator.getMockDirectory(), {
       recursive: true,
     });

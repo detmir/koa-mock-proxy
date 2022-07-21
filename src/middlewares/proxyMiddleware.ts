@@ -4,6 +4,7 @@ import {
 } from "http-proxy-middleware";
 import { MockProxyOptions } from "../types";
 import { Context, Next } from "koa";
+import {log} from "../utils/log";
 
 export const proxyMiddleware =
   (options: MockProxyOptions) => (ctx: Context, next: Next) => {
@@ -18,6 +19,7 @@ export const proxyMiddleware =
      */
       selfHandleResponse: true,
       onProxyRes: responseInterceptor(async (responseBuffer) => {
+        log('info', `[Proxy] ${ctx.url}`);
 
         let buffer = responseBuffer;
 
