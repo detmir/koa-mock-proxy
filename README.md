@@ -1,10 +1,10 @@
 # Koa mock proxy
 
-`koa-mock-proxy` is a set of tools for creating proxy servers with possibility for record and replay responses.
+`koa-mock-proxy` is a set of tools for creating proxy servers with possibility of record and replay responses.
 
 This can be useful for:
- * service/integration tests (for example where you want test only frontend)
- * e2e tests where you want to isolate chosen endpoint
+ * service/integration tests (for example, where you want test only frontend)
+ * e2e tests where you want to isolate chosen endpoints
  * Manually testing application without backend or for a specific scenario
  * Logging activity between services
 
@@ -14,7 +14,7 @@ You are free to use all possibilities of Koa (custom middlewares like [koa-route
  * Proxy http requests
  * Record requests and responses (body and headers) into human readable files
  * Log proxy requests
- * Manage different test scenarios (depending on a scenario same endpoint can give different response).
+ * Manage different test scenarios (depending on a scenario, same endpoint can give different response).
 
 ## Working modes
 
@@ -61,18 +61,18 @@ Proxy only a specific route:
 
   const userRouter = new Router();
   // This route will record or replay depending on global configuration
-  userRouter.post(ssoUrl('/users'), mockProxy());
+  userRouter.post('/users', mockProxy());
 
   // This route will replay or proxy
-  userRouter.post(ssoUrl('/users'), mockProxy({ mode: 'replayOrProxy' }));
+  userRouter.post('/users', mockProxy({ mode: 'replayOrProxy' }));
 
   // this route proxy to custom url
-  userRouter.get(ssoUrl('/user/:id'), mockProxy({
+  userRouter.get('/user/:id', mockProxy({
     mode: 'record',
     targetUrl: 'http://my-service2.com/api'
   }));
 
-  server.use(userRouter);
+  server.use(userRouter.routes());
 
   server.use(koaMockProxy({
     targetUrl: 'http://my-service.com/api'

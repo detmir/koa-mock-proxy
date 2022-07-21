@@ -18,9 +18,17 @@ export const proxyMiddleware =
      */
       selfHandleResponse: true,
       onProxyRes: responseInterceptor(async (responseBuffer) => {
+
+        let buffer = responseBuffer;
+
+        if (options.convertProxyResponse) {
+          buffer = options.convertProxyResponse(responseBuffer, ctx);
+        }
+
         // генерирую событие данных, на которое может быть подписан наш автомок
-        ctx.res.emit("data", responseBuffer);
-        return responseBuffer;
+        ctx.res.emit("data", buffer);
+
+        return buffer;
       }),
     });
 

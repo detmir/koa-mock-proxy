@@ -1,9 +1,7 @@
 import { Context } from "koa";
 import {OutgoingHttpHeaders} from "http";
 
-export type MockProxyUserOptions = Partial<MockProxyOptions> & {
-  recordOptions?: Partial<MockProxyOptions['recordOptions']>
-};
+export type MockProxyUserOptions = Partial<MockProxyOptions>;
 
 export interface MockProxyOptions {
   /**
@@ -13,6 +11,8 @@ export interface MockProxyOptions {
    * "replayOrProxy". Server read response from file. If there are no matching file, go to targetUrl.
    */
   mode: "record" | "replay" | "replayOrProxy" | "proxy";
+
+  convertProxyResponse: (body: Buffer, ctx: Context) => Buffer;
   /**
    * An url where a mock server proxy request.
    * Required for all modes except "replay"
@@ -33,7 +33,7 @@ export interface MockProxyOptions {
      * Determines is mock server can overwrite file in record mode
      * You can also redefine this value is mock file by adding file "overwrite"
      */
-    overwrite: false
+    overwrite?: boolean
   };
 }
 
@@ -61,7 +61,7 @@ export interface MockFileContents {
   /**
    * Response body
    */
-  body: string;
+  body: string | object;
 
   overwrite?: boolean;
 }
