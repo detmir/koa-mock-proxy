@@ -12,6 +12,12 @@ export interface MockProxyOptions {
    */
   mode: "record" | "replay" | "replayOrProxy" | "proxy";
 
+  /**
+   * Rewrite target's url path. Object-keys will be used as RegExp to match paths.
+   * (from http-proxy-middleware)
+   */
+  pathRewrite: Record<string, string> | undefined;
+
   convertProxyResponse: (body: Buffer, ctx: Context) => Buffer;
   /**
    * An url where a mock server proxy request.

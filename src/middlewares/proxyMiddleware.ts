@@ -10,13 +10,14 @@ export const proxyMiddleware =
   (options: MockProxyOptions) => (ctx: Context, next: Next) => {
     const proxyMiddleware = createProxyMiddleware({
       target: options.targetUrl,
+      pathRewrite: options.pathRewrite,
       changeOrigin: true,
       logLevel: "warn",
 
       /*
-    Включаю режим перехвата ответа прокси, что б извлечь, декомпрессировать, если сжато и передать в боди
-    https://github.com/chimurai/http-proxy-middleware/blob/master/src/handlers/response-interceptor.ts#L18
-     */
+      Включаю режим перехвата ответа прокси, что б извлечь, декомпрессировать, если сжато и передать в боди
+      https://github.com/chimurai/http-proxy-middleware/blob/master/src/handlers/response-interceptor.ts#L18
+      */
       selfHandleResponse: true,
       onProxyRes: responseInterceptor(async (responseBuffer) => {
         log('info', `[Proxy] ${ctx.url}`);
