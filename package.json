@@ -1,5 +1,5 @@
 {
-  "name": "koa-mock-proxy",
+  "name": "@detmir/koa-mock-proxy",
   "version": "0.0.1",
   "description": "A set of tools for creating proxy servers with possibility for record and replay responses.",
   "main": "index.js",
