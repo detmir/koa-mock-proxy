@@ -37,9 +37,15 @@ export class FileLocator {
   public getMockDirectory() {
     const urlPath = this.ctx.path.split(/\/+/).slice(0, -1);
 
-    return `${this.options.mocksDirectory}${urlPath
+    const directoryPath = urlPath
       .map(encodeFilename)
-      .join("/")}`;
+      .join("/");
+
+    if (typeof this.options.mocksDirectory === 'function') {
+      return this.options.mocksDirectory(directoryPath);
+    }
+
+    return `${this.options.mocksDirectory}${directoryPath}`;
   }
 
   public getMockPath() {

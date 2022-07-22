@@ -9,6 +9,7 @@ import {log} from "../utils/log";
 const readMock = async (ctx, options: MockProxyOptions): Promise<MockFileContents>  => {
   const fileLocator = new FileLocator(options, ctx);
 
+  log('debug', `Mock filename: ${fileLocator.getMockPath()}`);
     const file = await fs.promises.readFile(fileLocator.getMockPath(), {
       encoding: "utf-8",
     });
@@ -36,9 +37,10 @@ const replyWithMock = async (ctx, options: MockProxyOptions) => {
   try {
     fileContents = await readMock(ctx, options);
   } catch (e) {
+    log('info', `[Read mock] Read error: ${ctx.url} ${e.message}`);
     return;
   }
-  log('info', `[Read mock] ${ctx.url}`);
+  log('info', `[Read mock] Read successfully: ${ctx.url}`);
 
 
   putMockToCtx(ctx, fileContents);

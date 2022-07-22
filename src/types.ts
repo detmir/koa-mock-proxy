@@ -28,7 +28,7 @@ export interface MockProxyOptions {
    * A base directory for all mocks
    * Required for all modes except "proxy
    */
-  mocksDirectory: string | null;
+  mocksDirectory: string | null | ((path: string) => string);
   recordOptions: {
     /**
      * A prefix for file url depending on working mode
