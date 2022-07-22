@@ -2,8 +2,10 @@
   "name": "@detmir/koa-mock-proxy",
   "version": "0.0.1",
   "description": "A set of tools for creating proxy servers with possibility for record and replay responses.",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "build": "tsc",
     "test": "jest",
     "lint": "eslint ./src ./tests",
     "lint:fix": "eslint --fix ./src ./tests"
