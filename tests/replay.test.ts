@@ -28,6 +28,14 @@ describe("Tests in replay mode", () => {
     await request(proxy.server).get("/").expect(200, getJsonMock());
   });
 
+  it("Should replay JS files correctly", async () => {
+    await request(proxy.server).get("/jsFile?a=b").expect(200, {
+      query: {
+        a: 'b'
+      }
+    });
+  });
+
   it("Should replay request with parameters if no requests in mock", async () => {
     await request(proxy.server).get("/?a=b").expect(200, getJsonMock());
   });
