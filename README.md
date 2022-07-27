@@ -16,7 +16,25 @@ You are free to use all possibilities of Koa (custom middlewares like [koa-route
  * Log proxy requests
  * Manage different test scenarios (depending on a scenario, same endpoint can give different response).
 
-##
+## Mocks format and location
+
+Mocks are stored in file system in `mocksDirectory`. The exact location depends on http method, uri path,
+scenario and query location.
+
+Location format:
+
+`[path]_[httpMethod]_[pathSlug][.scenario]*[.paramName=paramValue]*.[json|js]`
+
+Some rules to mention:
+ * Query parameters are optional. If parameter is not specified, it can be any value.
+ * If scenarios are not specified, it can be any scenario.
+ * Prohibited symbols for filenames (for Windows, Linux or Macos) will be replaced to `_` (underscore)
+
+Examples of transforming request to file location:
+
+ * `GET /products/attributes-names` => `/products/GET_attributes-names.json`
+ * `GET /products/test.gif` => `/products/GET_test_gif.json`
+ * `PUT /products/attributes?a=b&c=d` => `/products/POST_attributes.a=b.c=d.json`
 
 ## Working modes
 
