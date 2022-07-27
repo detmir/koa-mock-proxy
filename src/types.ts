@@ -18,20 +18,23 @@ export interface MockProxyOptions {
    */
   pathRewrite: Record<string, string> | undefined;
 
+  /**
+   * Converts proxy response. If used in record mode, converted response will be saved
+   */
   convertProxyResponse: (body: Buffer, ctx: Context) => Buffer;
   /**
-   * An url where a mock server proxy request.
+   * An url where a mock server proxies request.
    * Required for all modes except "replay"
    */
   targetUrl: string;
   /**
    * A base directory for all mocks
-   * Required for all modes except "proxy
+   * Required for all modes except "proxy"
    */
   mocksDirectory: string | null | ((path: string) => string);
   recordOptions: {
     /**
-     * A prefix for file url depending on working mode
+     * A postfix for file url depending on working mode
      * You can use different postfixes depending on a scenario or an incoming request (request body, headers, etc)
      */
     getFilenamePostfix?: (ctx: Context) => string;

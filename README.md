@@ -16,6 +16,10 @@ You are free to use all possibilities of Koa (custom middlewares like [koa-route
  * Log proxy requests
  * Manage different test scenarios (depending on a scenario, same endpoint can give different response).
 
+## API reference
+
+[API reference is here](./docs/api.md)
+
 ## Mocks format and location
 
 Mocks are stored in file system in `mocksDirectory`. The exact location depends on http method, uri path,
