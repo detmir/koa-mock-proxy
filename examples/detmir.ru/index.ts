@@ -1,11 +1,17 @@
 import Koa from 'koa';
-import {mockProxyMiddleware} from '../../src';
+import {controlMiddleware, mockProxyMiddleware} from '../../src';
 import Router from "@koa/router";
 import {isTextContentType} from "../../src/utils/isTextContentType";
+import {addAvailableScenario} from "../../src/utils/scenarioStorage";
 
 const server = new Koa();
 
 const detmirRouter = new Router();
+
+addAvailableScenario('default');
+addAvailableScenario('test');
+
+detmirRouter.use(controlMiddleware());
 
 const convertProxyResponse = (response, ctx) => {
   if (isTextContentType(ctx.response.get("content-type"))) {

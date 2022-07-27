@@ -2,6 +2,8 @@ export { mockProxyMiddleware } from "./middlewares/mockProxyMiddleware";
 export { mockProxyConfigMiddleware } from "./middlewares/mockProxyConfigMiddleware";
 export { scenariosMiddleware } from "./middlewares/scenariosMiddleware";
 
+export { controlMiddleware } from "./routes";
+
 export { MockProxyUserOptions } from "./types";
 
 export { setActiveScenarios } from "./utils/scenarioStorage";

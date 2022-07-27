@@ -1,0 +1,69 @@
+<!doctype html>
+<html class="no-js" lang="ru-RU">
+<head>
+  <meta charset="utf-8" />
+
+  <title>Mock server</title>
+
+  <style>
+    .scenarioLabel {
+      display: block;
+      margin: 4px 0;
+      font-size: 18px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 5px;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+<h2>Сценарии mock сервера</h2>
+<form id="scenariosForm">
+  Загружаются...
+</form>
+
+<script type="text/javascript">
+  const apiPrefix = `${window.location.pathname}api/`;
+
+  const refreshScenarios = async () => {
+
+    const { scenarios } = await fetch(`${apiPrefix}scenarios`).then(response => response.json());
+
+    const scenariosElement = document.getElementById('scenariosForm');
+
+    scenariosElement.innerHTML = `
+          ${scenarios.map(scenario => `
+            <label class="scenarioLabel">
+                <input type="checkbox" name="scenarios" value="${scenario.id}" ${scenario.active ? 'checked="checked"' : ''} />
+                ${scenario.id}
+            </label>
+          `).join('\n')}
+
+          <button id="setScenariosButton">Сохранить</button>
+        `;
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    refreshScenarios();
+
+    document.getElementById('scenariosForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+
+      await fetch(`${apiPrefix}scenarios`, {
+        method: 'PUT',
+        body: JSON.stringify(formData.getAll('scenarios')),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      return refreshScenarios();
+    })
+  });
+</script>
+</body>
+</html>

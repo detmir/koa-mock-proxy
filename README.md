@@ -16,6 +16,8 @@ You are free to use all possibilities of Koa (custom middlewares like [koa-route
  * Log proxy requests
  * Manage different test scenarios (depending on a scenario, same endpoint can give different response).
 
+##
+
 ## Working modes
 
 Server can work in the following modes:
