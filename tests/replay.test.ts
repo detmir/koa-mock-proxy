@@ -28,6 +28,19 @@ describe("Tests in replay mode", () => {
     await request(proxy.server).get("/").expect(200, getJsonMock());
   });
 
+  it("Should replay request with parameters if no requests in mock", async () => {
+    await request(proxy.server).get("/?a=b").expect(200, getJsonMock());
+  });
+
+  it("Should replay request with parameters", async () => {
+    await request(proxy.server).get("/params?a=b").expect(200, getJsonMock());
+  });
+
+  it("Should not replay request with wrong parameters", async () => {
+    await request(proxy.server).get("/params?b=c").expect(404);
+    await request(proxy.server).get("/params?a=c").expect(404);
+  });
+
   it("Should replay correctly", async () => {
     const image = await readFile(`${__dirname}/testServer/testImg.gif`);
 

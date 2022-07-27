@@ -1,0 +1,16 @@
+{
+  "code": 200,
+  "requestUrl": "/",
+  "headers": {
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "19",
+    "connection": "close"
+  },
+  "bodyEncoding": "json",
+  "body": {
+    "testArr": [
+      2,
+      "3"
+    ]
+  }
+}

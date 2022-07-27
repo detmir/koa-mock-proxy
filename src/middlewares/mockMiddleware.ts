@@ -10,11 +10,28 @@ const readMock = async (ctx, options: MockProxyOptions): Promise<MockFileContent
   const fileLocator = new FileLocator(options, ctx);
 
   log('debug', `Mock filename: ${fileLocator.getMockPath()}`);
-    const file = await fs.promises.readFile(fileLocator.getMockPath(), {
+
+  const directory = fileLocator.getMockDirectory();
+
+  const files = await fs.promises.readdir(directory, { withFileTypes: true });
+
+  const matchedFile = files.find(file => {
+    if (!file.isFile()) {
+      return false;
+    }
+
+    return fileLocator.isFileMatched(file.name);
+  })
+
+  if (matchedFile) {
+    const file = await fs.promises.readFile(`${directory}/${matchedFile.name}`, {
       encoding: "utf-8",
     });
 
     return JSON.parse(file);
+  } else {
+    throw new Error('Can not find mock file!')
+  }
 }
 
 const putMockToCtx = (ctx, fileContents: any) => {

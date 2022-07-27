@@ -1,5 +1,7 @@
 import { MockProxyOptions } from "../types";
 import { Context } from "koa";
+import { getActiveScenarios } from "./scenarioStorage";
+
 
 // заменяет имена файлов моков на безопасные
 // todo: is it really safe?
@@ -16,7 +18,7 @@ export class FileLocator {
     this.ctx = ctx;
   }
 
-  getMockFilename = () => {
+  getMockCommonPart = () => {
     const urlPath = this.ctx.path.split("/").filter(Boolean);
     const requestMethod = this.ctx.method;
 
@@ -24,15 +26,47 @@ export class FileLocator {
       basename: `${requestMethod}_${encodeFilename(
         urlPath[urlPath.length - 1] ?? ROOT_FILENAME
       )}`,
-      extension: "json",
       postfix:
         this.options.recordOptions.getFilenamePostfix?.(this.ctx) ?? null,
     };
 
-    return `${file.basename}${file.postfix ? `_${file.postfix}` : ""}.${
-      file.extension
-    }`;
+    return `${file.basename}${file.postfix ? `_${file.postfix}` : ""}`;
+  }
+
+  getMockFilename = () => {
+    return `${this.getMockCommonPart()}.json`;
   };
+
+  public isFileMatched = (filename: string) => {
+    const fileParts = filename.split('.');
+    const allowedExtensions = ['json', 'js'];
+
+    const commonFilenamePart = this.getMockCommonPart();
+
+    if (fileParts.length < 2) {
+      return false;
+    }
+
+    if (fileParts[0] !== commonFilenamePart) {
+      return false;
+    }
+
+    if (!allowedExtensions.includes(fileParts[fileParts.length - 1])) {
+      return false;
+    }
+
+    const scenariosOrQueryParams = fileParts.slice(1, -1);
+
+    return scenariosOrQueryParams.every(scenarioOrQueryParam => {
+      if (scenarioOrQueryParam.includes('=')) {
+        const [paramName, paramsValue] = scenarioOrQueryParam.split('=');
+
+        return Object.prototype.hasOwnProperty.call(this.ctx.query, paramName) && this.ctx.query[paramName] === paramsValue;
+      }
+
+      return getActiveScenarios().includes(scenarioOrQueryParam);
+    })
+  }
 
   public getMockDirectory() {
     const urlPath = this.ctx.path.split(/\/+/).slice(0, -1);
