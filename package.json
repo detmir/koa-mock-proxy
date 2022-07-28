@@ -6,8 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "npm run build-client & npm run build-server",
-    "build-client": "npx parcel build ./index.html",
+    "build": "npm run build-client && npm run build-server",
+    "build-client": "npx parcel build ./src/client/index.html",
     "build-server": "tsc",
     "test": "jest",
     "lint": "eslint ./src ./tests",
