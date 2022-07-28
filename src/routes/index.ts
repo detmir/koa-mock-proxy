@@ -1,7 +1,9 @@
 import Router from "@koa/router";
 import {apiRouter} from "./api";
 import {log} from "../utils/log";
-import fs from "fs";
+import path from "path";
+import serve from 'koa-static';
+import mount from 'koa-mount';
 
 interface ControlMiddlewareOptions {
   path?: string
@@ -18,18 +20,20 @@ export const controlMiddleware = (options: ControlMiddlewareOptions = {}) => {
 
   log('debug', `Registered control middleware for path ${combinedOptions.path}`);
 
-  router.get('/', async ctx => {
-    ctx.body = await fs.promises.readFile(`${__dirname}/../static/index.html`, {
-      encoding: 'utf-8',
-    });
-  });
-
   router.use(apiRouter.routes());
+
+  router.use(
+    mount(combinedOptions.path, serve(path.resolve('src/client/dist/'), {
+        maxage: 0,
+        defer: false
+      })
+    ),
+  );
 
   router.use(ctx => {
     ctx.status = 404;
     ctx.body = 'Koa mock proxy route not found!';
-  })
+  });
 
   return router.routes();
 }

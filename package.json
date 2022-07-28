@@ -6,7 +6,9 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "tsc",
+    "build": "npm run build-client & npm run build-server",
+    "build-client": "npx parcel build ./index.html",
+    "build-server": "tsc",
     "test": "jest",
     "lint": "eslint ./src ./tests",
     "lint:fix": "eslint --fix ./src ./tests"
@@ -20,6 +22,8 @@
     "koa": "^2.13.4",
     "koa-body": "^5.0.0",
     "koa-compose": "^4.1.0",
+    "koa-mount": "^4.0.0",
+    "koa-static": "^5.0.0",
     "ts-node": "^10.9.1"
   },
   "devDependencies": {
