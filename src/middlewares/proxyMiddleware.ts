@@ -20,7 +20,9 @@ export const proxyMiddleware =
       */
       selfHandleResponse: true,
       onProxyRes: responseInterceptor(async (responseBuffer) => {
-        log('info', `[Proxy] ${ctx.url}`);
+        log('info', `[Proxy] ${ctx.url}`, ctx);
+
+        ctx.state.responseSource = 'proxy';
 
         let buffer = responseBuffer;
 

@@ -1,7 +1,7 @@
 import Router from "@koa/router";
 import {jsonParser} from "../middlewares/jsonParser";
 import {getActiveScenarios, getAvailableScenarios, setActiveScenarios} from "../utils/scenarioStorage";
-import {getLogs} from "../middlewares/logMiddleware";
+import {getLogs, getRequestDetails, LogFilters} from "../middlewares/logMiddleware";
 
 export const apiRouter = new Router({
   prefix: '/api'
@@ -32,7 +32,25 @@ apiRouter.put('/scenarios', jsonParser(), async ctx => {
 });
 
 apiRouter.get('/logs',  ctx => {
+  const { search } = ctx.query;
+
   ctx.body = {
-    logs: getLogs(),
+    logs: getLogs({ search } as LogFilters),
   };
+});
+
+apiRouter.get('/logs/:requestId',  ctx => {
+  const { requestId } = ctx.params;
+
+  const requestDetails = getRequestDetails(requestId);
+
+  if (requestDetails.request instanceof Buffer) {
+    requestDetails.request = requestDetails.response.toString('base64url');
+  }
+
+  if (requestDetails.response instanceof Buffer) {
+    requestDetails.response = requestDetails.response.toString('base64url');
+  }
+
+  ctx.body = requestDetails;
 });

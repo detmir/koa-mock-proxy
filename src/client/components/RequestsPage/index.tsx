@@ -1,7 +1,10 @@
 import React from 'react';
-import { Table } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
+import { Input, Table, Space } from 'antd';
 import {useLoadRequests} from "./useLoadRequests";
 import dayjs from "dayjs";
+import {RequestDetails} from "./RequestDetails";
+import {useRequestDetails} from "./useRequestDetails";
 
 
 const columns = [
@@ -12,6 +15,11 @@ const columns = [
     render: timestamp => dayjs(timestamp).format('DD.MM.YYYY HH:mm:ss.SSS'),
   },
   {
+    title: 'Status code',
+    dataIndex: 'status',
+    key: 'status',
+  },
+  {
     title: 'Method',
     dataIndex: 'method',
     key: 'method',
@@ -20,18 +28,45 @@ const columns = [
     title: 'Url',
     dataIndex: 'url',
     key: 'url',
+  },
+  {
+    title: 'Content-type',
+    dataIndex: 'contentType',
+    key: 'contentType',
+  },
+  {
+    title: 'Response source',
+    dataIndex: 'responseSource',
+    key: 'responseSource',
   }
 ];
 
 export const RequestsPage = () => {
-  const { requests } = useLoadRequests();
+  const { requests, onChangeSearch } = useLoadRequests();
+  const { isVisible, onOpen, onClose, requestDetails } = useRequestDetails();
 
   return (
-    <Table
-      dataSource={requests}
-      columns={columns}
-      size='small'
-      pagination={false}
-    />
+    <>
+      <Space>
+        <Input size="small" placeholder="Search" prefix={<SearchOutlined />} onChange={(e) => {
+          onChangeSearch(e.target.value);
+        }} />
+      </Space>
+
+      <Table
+        dataSource={requests}
+        columns={columns}
+        size='small'
+        onRow={(record) => {
+          return {
+            onClick: () => { onOpen(record.id) }
+          };
+        }}
+        pagination={false}
+        rowKey='id'
+      />
+
+      <RequestDetails isVisible={isVisible} onClose={onClose} requestDetails={requestDetails} />
+    </>
   );
 };

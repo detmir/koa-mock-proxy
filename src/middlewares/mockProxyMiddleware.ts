@@ -5,12 +5,15 @@ import { getCombinedOptions } from "../utils/getCombinedOptions";
 import { proxyMiddleware } from "./proxyMiddleware";
 import { mockMiddleware } from "./mockMiddleware";
 import {logMiddleware} from "./logMiddleware";
+import {log} from "../utils/log";
 
 export const mockProxyMiddleware = (options: MockProxyUserOptions = {}) => {
   return compose([
     logMiddleware(),
     async (ctx: Context, next: Next) => {
       const combinedOptions = getCombinedOptions(ctx, options);
+
+      log('debug', `Request mode: ${combinedOptions.mode}`, ctx);
 
       const needMocks = ["record", "replay", "replayOrProxy"].includes(
         combinedOptions.mode
@@ -29,7 +32,7 @@ export const mockProxyMiddleware = (options: MockProxyUserOptions = {}) => {
       );
 
       if (needProxy) {
-        if (combinedOptions.mode === 'replayOrProxy' && ctx.response.headerSent) {
+        if (combinedOptions.mode === 'replayOrProxy' && ctx.state.responseSource === 'mock') {
           return;
         }
 

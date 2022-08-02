@@ -36,7 +36,7 @@ const fileReaders = {
 const findFileForRead =  async (ctx, options) => {
   const fileLocator = new FileLocator(options, ctx);
 
-  log('debug', `Mock filename: ${fileLocator.getMockPath()}`);
+  log('debug', `Mock filename: ${fileLocator.getMockPath()}`, ctx);
 
   const directory = fileLocator.getMockDirectory();
 
@@ -72,11 +72,12 @@ const putMockToCtx = async (ctx, options: MockProxyOptions): Promise<MockFileCon
 const replyWithMock = async (ctx, options: MockProxyOptions) => {
   try {
     await putMockToCtx(ctx, options);
+    ctx.state.responseSource = 'mock';
   } catch (e) {
-    log('info', `[Read mock] Read error: ${ctx.url} ${e.message}`);
+    log('info', `[Read mock] Read error: ${ctx.url} ${e.message}`, ctx);
     return;
   }
-  log('info', `[Read mock] Read successfully: ${ctx.url}`);
+  log('info', `[Read mock] Read successfully: ${ctx.url}`, ctx);
 };
 
 const encodeBody = (ctx: Context, body: Buffer): Pick<MockFileContents, 'body' | 'bodyEncoding'> => {
@@ -137,7 +138,7 @@ const writeMock = async (
   } catch (e) {}
 
   try {
-    log('info', `[Write mock] ${ctx.url}`);
+    log('info', `[Write mock] ${ctx.url}`, ctx);
 
     await fs.promises.mkdir(fileLocator.getMockDirectory(), {
       recursive: true,

@@ -1,0 +1,4 @@
+.bodyText {
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
