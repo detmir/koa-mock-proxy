@@ -28,7 +28,7 @@ export const controlMiddleware = (options: ControlMiddlewareOptions = {}) => {
   router.use(
     mount(
       combinedOptions.path,
-      serve(path.resolve("src/client/dist/"), {
+      serve(path.resolve(__dirname, "../../dist/client/"), {
         maxage: 0,
         defer: false,
       })

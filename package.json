@@ -7,7 +7,7 @@
   "scripts": {
     "prepublishOnly": "npm run build",
     "build": "npm run build-client && npm run build-server",
-    "build-client": "npx parcel build ./src/client/index.html --public-url ./",
+    "build-client": "npm --prefix client run build",
     "build-server": "tsc",
     "test": "jest",
     "lint": "eslint ./src ./tests",
@@ -44,5 +44,10 @@
     "superagent": "^7.1.2",
     "supertest": "^6.2.2",
     "typescript": "^4.6.3"
+  },
+  "alias": {
+    "process": {
+      "global": "{}"
+    }
   }
 }
