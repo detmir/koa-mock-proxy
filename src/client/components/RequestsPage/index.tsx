@@ -35,9 +35,10 @@ const columns = [
     key: 'contentType',
   },
   {
-    title: 'Response source',
+    title: 'Mode / Response source',
     dataIndex: 'responseSource',
     key: 'responseSource',
+    render: (responseSource, { mode }) => `${mode} / ${responseSource}`
   }
 ];
 

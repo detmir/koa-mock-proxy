@@ -74,10 +74,10 @@ const replyWithMock = async (ctx, options: MockProxyOptions) => {
     await putMockToCtx(ctx, options);
     ctx.state.responseSource = 'mock';
   } catch (e) {
-    log('info', `[Read mock] Read error: ${ctx.url} ${e.message}`, ctx);
+    log('info', `[Read mock] Mock read error: ${ctx.url} ${e.message}`, ctx);
     return;
   }
-  log('info', `[Read mock] Read successfully: ${ctx.url}`, ctx);
+  log('info', `[Read mock] Mock read successfully: ${ctx.url}`, ctx);
 };
 
 const encodeBody = (ctx: Context, body: Buffer): Pick<MockFileContents, 'body' | 'bodyEncoding'> => {

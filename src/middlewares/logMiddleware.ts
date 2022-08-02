@@ -11,6 +11,7 @@ export interface LogItem {
   status?: number;
   contentType?: string;
   responseSource: string;
+  mode: string;
 }
 
 export interface RequestDetails {
@@ -69,7 +70,8 @@ export class MemoryLogStorage {
       url: ctx.url,
       status: ctx.status,
       contentType: ctx.response.headers['content-type'] as string,
-      responseSource: ctx.state.responseSource
+      responseSource: ctx.state.responseSource,
+      mode: ctx.state.mockProxyMode
     };
 
     this.logs.push(logItem);

@@ -12,7 +12,6 @@ export const useRequestDetails = () => {
 
     setRequestDetails(data);
   };
-  console.log(requestDetails, 'requestDetails');
 
   const onOpen = (id: string) => {
     setVisible(true);

@@ -15,9 +15,9 @@ export const useLoadRequests = () => {
     setRequests(data.logs);
   });
 
-  const startLoadingData = async () => {
-    let stopped = false
+  let stopped = false;
 
+  const startLoadingData = async () => {
     while (!stopped) {
       try {
         await loadData();
@@ -25,13 +25,12 @@ export const useLoadRequests = () => {
 
       await sleep(500);
     }
-
-    return () => {
-      stopped = true;
-    };
   }
 
-  useEffect(startLoadingData, []);
+  useEffect(() => {
+    startLoadingData();
+    return () => { stopped = true };
+  }, []);
 
   const onChangeSearch = (newSearch) => {
     setFilters({

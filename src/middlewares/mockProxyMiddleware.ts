@@ -13,6 +13,7 @@ export const mockProxyMiddleware = (options: MockProxyUserOptions = {}) => {
     async (ctx: Context, next: Next) => {
       const combinedOptions = getCombinedOptions(ctx, options);
 
+      ctx.state.mockProxyMode = combinedOptions.mode;
       log('debug', `Request mode: ${combinedOptions.mode}`, ctx);
 
       const needMocks = ["record", "replay", "replayOrProxy"].includes(
