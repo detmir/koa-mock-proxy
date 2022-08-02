@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
-import {RequestDetails} from "../../../middlewares/logMiddleware";
+import { useState, useEffect } from "react";
+import { RequestDetails } from "../../../middlewares/logMiddleware";
 
 export const useScenarios = () => {
-
   const [scenarios, setScenarios] = useState<RequestDetails | null>([]);
 
   const loadScenarios = async () => {
@@ -15,19 +14,20 @@ export const useScenarios = () => {
   const saveScenarios = async (nextActiveScenarios) => {
     try {
       await fetch(`api/scenarios`, {
-        method: 'PUT',
+        method: "PUT",
         body: JSON.stringify(nextActiveScenarios),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          "Content-Type": "application/json",
+        },
       });
-
     } finally {
       loadScenarios();
     }
-  }
+  };
 
-  useEffect(() => { loadScenarios(); }, []);
+  useEffect(() => {
+    loadScenarios();
+  }, []);
 
   const changeActiveScenarios = (nextActiveScenarios) => {
     saveScenarios(nextActiveScenarios);
@@ -36,8 +36,8 @@ export const useScenarios = () => {
   return {
     scenarios,
     activeScenarios: scenarios
-      .filter(scenario => scenario.active)
-      .map(scenario => scenario.id),
+      .filter((scenario) => scenario.active)
+      .map((scenario) => scenario.id),
     changeActiveScenarios,
   };
 };

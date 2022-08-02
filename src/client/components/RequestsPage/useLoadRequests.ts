@@ -1,15 +1,14 @@
-import {useEffect, useState} from "react";
-import {usePersistentCallback} from "../../hooks/usePersistentCallback";
+import { useEffect, useState } from "react";
+import { usePersistentCallback } from "../../hooks/usePersistentCallback";
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const useLoadRequests = () => {
-
   let [filters, setFilters] = useState({});
   let [requests, setRequests] = useState<[unknown]>([]);
 
   const loadData = usePersistentCallback(async () => {
-    const response = await fetch('api/logs?'+ new URLSearchParams(filters));
+    const response = await fetch("api/logs?" + new URLSearchParams(filters));
     const data = await response.json();
 
     setRequests(data.logs);
@@ -25,19 +24,21 @@ export const useLoadRequests = () => {
 
       await sleep(500);
     }
-  }
+  };
 
   useEffect(() => {
     startLoadingData();
-    return () => { stopped = true };
+    return () => {
+      stopped = true;
+    };
   }, []);
 
   const onChangeSearch = (newSearch) => {
     setFilters({
       ...filters,
-      search: newSearch
+      search: newSearch,
     });
-  }
+  };
 
   return { requests, onChangeSearch };
 };

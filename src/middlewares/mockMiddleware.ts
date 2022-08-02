@@ -1,10 +1,10 @@
 import fs from "fs";
 
-import {MockFileContents, MockProxyOptions} from "../types";
+import { MockFileContents, MockProxyOptions } from "../types";
 import { Context } from "koa";
 import { isTextContentType } from "../utils/isTextContentType";
 import { FileLocator } from "../utils/FileLocator";
-import {log} from "../utils/log";
+import { log } from "../utils/log";
 
 const fileReaders = {
   json: async (path, ctx) => {
@@ -16,9 +16,11 @@ const fileReaders = {
 
     ctx.status = fileContents.code;
 
-    Object.entries(fileContents.headers).forEach(([headerName, headerValue]) => {
-      ctx.set(headerName, headerValue);
-    });
+    Object.entries(fileContents.headers).forEach(
+      ([headerName, headerValue]) => {
+        ctx.set(headerName, headerValue);
+      }
+    );
 
     if (fileContents.bodyEncoding === "base64") {
       ctx.body = Buffer.from(fileContents.body, "base64");
@@ -30,19 +32,19 @@ const fileReaders = {
     const js = require(path);
 
     return js(ctx);
-  }
+  },
 };
 
-const findFileForRead =  async (ctx, options) => {
+const findFileForRead = async (ctx, options) => {
   const fileLocator = new FileLocator(options, ctx);
 
-  log('debug', `Mock filename: ${fileLocator.getMockPath()}`, ctx);
+  log("debug", `Mock filename: ${fileLocator.getMockPath()}`, ctx);
 
   const directory = fileLocator.getMockDirectory();
 
   const files = await fs.promises.readdir(directory, { withFileTypes: true });
 
-  const file = files.find(file => {
+  const file = files.find((file) => {
     if (!file.isFile()) {
       return false;
     }
@@ -51,36 +53,42 @@ const findFileForRead =  async (ctx, options) => {
   });
 
   return file ? `${directory}/${file.name}` : null;
-}
+};
 
-const putMockToCtx = async (ctx, options: MockProxyOptions): Promise<MockFileContents>  => {
-  const matchedFile = await findFileForRead(ctx, options)
+const putMockToCtx = async (
+  ctx,
+  options: MockProxyOptions
+): Promise<MockFileContents> => {
+  const matchedFile = await findFileForRead(ctx, options);
 
   if (matchedFile) {
-    const extension = matchedFile.split('.').at(-1);
+    const extension = matchedFile.split(".").at(-1);
 
     if (!fileReaders.hasOwnProperty(extension)) {
-      throw new Error(`Unsupported extension ${extension}!`)
+      throw new Error(`Unsupported extension ${extension}!`);
     }
 
     return await fileReaders[extension](matchedFile, ctx);
   } else {
-    throw new Error('Can not find mock file!')
+    throw new Error("Can not find mock file!");
   }
-}
+};
 
 const replyWithMock = async (ctx, options: MockProxyOptions) => {
   try {
     await putMockToCtx(ctx, options);
-    ctx.state.responseSource = 'mock';
+    ctx.state.responseSource = "mock";
   } catch (e) {
-    log('info', `[Read mock] Mock read error: ${ctx.url} ${e.message}`, ctx);
+    log("info", `[Read mock] Mock read error: ${ctx.url} ${e.message}`, ctx);
     return;
   }
-  log('info', `[Read mock] Mock read successfully: ${ctx.url}`, ctx);
+  log("info", `[Read mock] Mock read successfully: ${ctx.url}`, ctx);
 };
 
-const encodeBody = (ctx: Context, body: Buffer): Pick<MockFileContents, 'body' | 'bodyEncoding'> => {
+const encodeBody = (
+  ctx: Context,
+  body: Buffer
+): Pick<MockFileContents, "body" | "bodyEncoding"> => {
   const contentType = ctx.response.get("content-type") ?? "";
 
   if (contentType.startsWith("application/json")) {
@@ -127,7 +135,7 @@ const writeMock = async (
     let fileName = await findFileForRead(ctx, options);
 
     if (!fileName) {
-      throw new Error('Mock not found');
+      throw new Error("Mock not found");
     }
 
     const canWrite = isCanOverwriteMock(options);
@@ -138,7 +146,7 @@ const writeMock = async (
   } catch (e) {}
 
   try {
-    log('info', `[Write mock] ${ctx.url}`, ctx);
+    log("info", `[Write mock] ${ctx.url}`, ctx);
 
     await fs.promises.mkdir(fileLocator.getMockDirectory(), {
       recursive: true,

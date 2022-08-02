@@ -1,13 +1,13 @@
-import {useRef} from "react";
+import { useRef } from "react";
 
 export function usePersistentCallback(func) {
   const ref = useRef(null);
   if (!ref.current) {
     ref.current = {
       callee: func,
-      caller: function() {
+      caller: function () {
         return ref.current.callee.apply(this, arguments);
-      }
+      },
     };
   }
   ref.current.callee = func;

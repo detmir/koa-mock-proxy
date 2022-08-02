@@ -11,7 +11,8 @@
     "build-server": "tsc",
     "test": "jest",
     "lint": "eslint ./src ./tests",
-    "lint:fix": "eslint --fix ./src ./tests"
+    "lint:fix": "eslint --fix ./src ./tests",
+    "prettier": "prettier --write ./src/"
   },
   "author": "Alexey Baranov",
   "license": "ISC",

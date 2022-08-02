@@ -1,5 +1,5 @@
 import { Context } from "koa";
-import {OutgoingHttpHeaders} from "http";
+import { OutgoingHttpHeaders } from "http";
 
 export type MockProxyUserOptions = Partial<MockProxyOptions>;
 
@@ -42,7 +42,7 @@ export interface MockProxyOptions {
      * Determines is mock server can overwrite file in record mode
      * You can also redefine this value is mock file by adding file "overwrite"
      */
-    overwrite?: boolean
+    overwrite?: boolean;
   };
 }
 

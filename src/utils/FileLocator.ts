@@ -2,7 +2,6 @@ import { MockProxyOptions } from "../types";
 import { Context } from "koa";
 import { getActiveScenarios } from "./scenarioStorage";
 
-
 // заменяет имена файлов моков на безопасные
 // todo: is it really safe?
 const encodeFilename = (filename) => filename.replace(/[:"<>?|\\.]/g, "_");
@@ -31,15 +30,15 @@ export class FileLocator {
     };
 
     return `${file.basename}${file.postfix ? `_${file.postfix}` : ""}`;
-  }
+  };
 
   getMockFilename = () => {
     return `${this.getMockCommonPart()}.json`;
   };
 
   public isFileMatched = (filename: string) => {
-    const fileParts = filename.split('.');
-    const allowedExtensions = ['json', 'js'];
+    const fileParts = filename.split(".");
+    const allowedExtensions = ["json", "js"];
 
     const commonFilenamePart = this.getMockCommonPart();
 
@@ -57,25 +56,26 @@ export class FileLocator {
 
     const scenariosOrQueryParams = fileParts.slice(1, -1);
 
-    return scenariosOrQueryParams.every(scenarioOrQueryParam => {
-      if (scenarioOrQueryParam.includes('=')) {
-        const [paramName, paramsValue] = scenarioOrQueryParam.split('=');
+    return scenariosOrQueryParams.every((scenarioOrQueryParam) => {
+      if (scenarioOrQueryParam.includes("=")) {
+        const [paramName, paramsValue] = scenarioOrQueryParam.split("=");
 
-        return Object.prototype.hasOwnProperty.call(this.ctx.query, paramName) && this.ctx.query[paramName] === paramsValue;
+        return (
+          Object.prototype.hasOwnProperty.call(this.ctx.query, paramName) &&
+          this.ctx.query[paramName] === paramsValue
+        );
       }
 
       return getActiveScenarios().includes(scenarioOrQueryParam);
-    })
-  }
+    });
+  };
 
   public getMockDirectory() {
     const urlPath = this.ctx.path.split(/\/+/).slice(0, -1);
 
-    const directoryPath = urlPath
-      .map(encodeFilename)
-      .join("/");
+    const directoryPath = urlPath.map(encodeFilename).join("/");
 
-    if (typeof this.options.mocksDirectory === 'function') {
+    if (typeof this.options.mocksDirectory === "function") {
       return this.options.mocksDirectory(directoryPath);
     }
 

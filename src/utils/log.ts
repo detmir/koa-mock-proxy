@@ -1,7 +1,7 @@
-import {Context} from "koa";
+import { Context } from "koa";
 
-export const log  = (type: 'info' | 'debug', message: string, ctx?: Context) => {
-  if (process.env.DEBUG_PROXY && process.env.DEBUG_PROXY!=='false') {
+export const log = (type: "info" | "debug", message: string, ctx?: Context) => {
+  if (process.env.DEBUG_PROXY && process.env.DEBUG_PROXY !== "false") {
     console.log(message);
   }
 
@@ -12,4 +12,4 @@ export const log  = (type: 'info' | 'debug', message: string, ctx?: Context) => 
 
     ctx.state.logMessages.push(message);
   }
-}
+};

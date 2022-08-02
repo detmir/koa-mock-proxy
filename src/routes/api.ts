@@ -1,24 +1,32 @@
 import Router from "@koa/router";
-import {jsonParser} from "../middlewares/jsonParser";
-import {getActiveScenarios, getAvailableScenarios, setActiveScenarios} from "../utils/scenarioStorage";
-import {getLogs, getRequestDetails, LogFilters} from "../middlewares/logMiddleware";
+import { jsonParser } from "../middlewares/jsonParser";
+import {
+  getActiveScenarios,
+  getAvailableScenarios,
+  setActiveScenarios,
+} from "../utils/scenarioStorage";
+import {
+  getLogs,
+  getRequestDetails,
+  LogFilters,
+} from "../middlewares/logMiddleware";
 
 export const apiRouter = new Router({
-  prefix: '/api'
+  prefix: "/api",
 });
 
-apiRouter.get('/scenarios',  ctx => {
+apiRouter.get("/scenarios", (ctx) => {
   const activeScenarios = getActiveScenarios();
 
   ctx.body = {
-    scenarios: getAvailableScenarios().map(scenario => ({
+    scenarios: getAvailableScenarios().map((scenario) => ({
       id: scenario,
       active: activeScenarios.includes(scenario),
     })),
   };
 });
 
-apiRouter.put('/scenarios', jsonParser(), async ctx => {
+apiRouter.put("/scenarios", jsonParser(), async (ctx) => {
   const nextScenarios = ctx.request.body as string[];
 
   if (!Array.isArray(nextScenarios)) {
@@ -31,7 +39,7 @@ apiRouter.put('/scenarios', jsonParser(), async ctx => {
   ctx.body = { scenarios: getActiveScenarios() };
 });
 
-apiRouter.get('/logs',  ctx => {
+apiRouter.get("/logs", (ctx) => {
   const { search } = ctx.query;
 
   ctx.body = {
@@ -39,17 +47,17 @@ apiRouter.get('/logs',  ctx => {
   };
 });
 
-apiRouter.get('/logs/:requestId',  ctx => {
+apiRouter.get("/logs/:requestId", (ctx) => {
   const { requestId } = ctx.params;
 
   const requestDetails = getRequestDetails(requestId);
 
   if (requestDetails.request instanceof Buffer) {
-    requestDetails.request = requestDetails.response.toString('base64url');
+    requestDetails.request = requestDetails.response.toString("base64url");
   }
 
   if (requestDetails.response instanceof Buffer) {
-    requestDetails.response = requestDetails.response.toString('base64url');
+    requestDetails.response = requestDetails.response.toString("base64url");
   }
 
   ctx.body = requestDetails;
