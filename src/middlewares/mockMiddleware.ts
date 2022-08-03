@@ -2,9 +2,9 @@ import fs from "fs";
 
 import { MockFileContents, MockProxyOptions } from "../types";
 import { Context } from "koa";
-import { isTextContentType } from "../utils/isTextContentType";
 import { FileLocator } from "../utils/FileLocator";
 import { log } from "../utils/log";
+import { encodeMockBody } from "../utils/encodeMockBody";
 
 const fileReaders = {
   json: async (path, ctx) => {
@@ -85,33 +85,6 @@ const replyWithMock = async (ctx, options: MockProxyOptions) => {
   log("info", `[Read mock] Mock read successfully: ${ctx.url}`, ctx);
 };
 
-const encodeBody = (
-  ctx: Context,
-  body: Buffer
-): Pick<MockFileContents, "body" | "bodyEncoding"> => {
-  const contentType = ctx.response.get("content-type") ?? "";
-
-  if (contentType.startsWith("application/json")) {
-    return {
-      bodyEncoding: "json",
-      body: JSON.parse(body.toString("utf-8")),
-    };
-  }
-
-  if (isTextContentType(contentType)) {
-    // todo: deal with another encodings
-    return {
-      bodyEncoding: "utf-8",
-      body: body.toString("utf-8"),
-    };
-  }
-
-  return {
-    bodyEncoding: "base64",
-    body: body.toString("base64"),
-  };
-};
-
 export const isCanOverwriteMock = (options: MockProxyOptions) => {
   return options.recordOptions.overwrite ?? false;
 };
@@ -128,7 +101,7 @@ const writeMock = async (
     // записываем просто для информации, чтобы мы могли ориентироваться с какого запроса пришел был записан мок
     requestUrl: ctx.url,
     headers: ctx.response.headers,
-    ...encodeBody(ctx, content),
+    ...encodeMockBody(ctx.response.get("content-type") ?? "", content),
   };
 
   try {
