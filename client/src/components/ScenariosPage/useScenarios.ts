@@ -1,24 +1,22 @@
 import { useState, useEffect } from "react";
-import { RequestDetails } from "../../../middlewares/logMiddleware";
+import { RequestDetails } from "../../../../src/middlewares/logMiddleware";
+import { apiRequest } from "../../helpers/apiRequest";
 
 export const useScenarios = () => {
   const [scenarios, setScenarios] = useState<RequestDetails | null>([]);
 
   const loadScenarios = async () => {
-    const response = await fetch(`api/scenarios`);
-    const data = await response.json();
+    const data = await apiRequest({ url: "scenarios" });
 
     setScenarios(data.scenarios);
   };
 
   const saveScenarios = async (nextActiveScenarios) => {
     try {
-      await fetch(`api/scenarios`, {
+      await apiRequest({
+        url: "scenarios",
         method: "PUT",
-        body: JSON.stringify(nextActiveScenarios),
-        headers: {
-          "Content-Type": "application/json",
-        },
+        params: nextActiveScenarios,
       });
     } finally {
       loadScenarios();

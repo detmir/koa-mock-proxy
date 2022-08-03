@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { usePersistentCallback } from "../../hooks/usePersistentCallback";
+import { apiRequest } from "../../helpers/apiRequest";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -8,8 +9,7 @@ export const useLoadRequests = () => {
   let [requests, setRequests] = useState<[unknown]>([]);
 
   const loadData = usePersistentCallback(async () => {
-    const response = await fetch("api/logs?" + new URLSearchParams(filters));
-    const data = await response.json();
+    const data = await apiRequest({ url: "logs", params: filters });
 
     setRequests(data.logs);
   });

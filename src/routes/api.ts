@@ -39,6 +39,19 @@ apiRouter.put("/scenarios", jsonParser(), async (ctx) => {
   ctx.body = { scenarios: getActiveScenarios() };
 });
 
+apiRouter.post("/mocks", jsonParser(), async (ctx) => {
+  const { logIds } = ctx.request.body as { logIds?: string[] };
+
+  if (!Array.isArray(logIds)) {
+    ctx.status = 400;
+    return;
+  }
+
+  // TODO: record mocks
+
+  ctx.body = {};
+});
+
 apiRouter.get("/logs", (ctx) => {
   const { search } = ctx.query;
 

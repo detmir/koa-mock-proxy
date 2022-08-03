@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { RequestDetails } from "../../../middlewares/logMiddleware";
+import { apiRequest } from "../../helpers/apiRequest";
+import { RequestDetails } from "../../../../src/middlewares/logMiddleware";
 
 export const useRequestDetails = () => {
   const [isVisible, setVisible] = useState<boolean>(false);
@@ -8,8 +9,7 @@ export const useRequestDetails = () => {
   );
 
   const loadData = async (id: string) => {
-    const response = await fetch(`api/logs/${id}`);
-    const data = await response.json();
+    const data = await apiRequest({ url: `logs/${id}` });
 
     setRequestDetails(data);
   };
