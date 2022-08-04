@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "build": "parcel build ./src/index.html --public-url ./ --dist-dir ../dist/client",
+    "build": "parcel build ./src/index.html --public-url ./ --dist-dir ../dist/client --no-cache",
     "watch": "parcel ./src/index.html --public-url ./ --dist-dir ../dist/client"
   },
   "author": "Alexey Baranov",
