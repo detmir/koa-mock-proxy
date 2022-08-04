@@ -25,14 +25,12 @@ export const controlMiddleware = (options: ControlMiddlewareOptions = {}) => {
 
   router.use(apiRouter.routes());
 
-  router.use(
-    mount(
-      combinedOptions.path,
-      serve(path.resolve(__dirname, "../../dist/client/"), {
-        maxage: 0,
-        defer: false,
-      })
-    )
+  router.get(
+    "*",
+    serve(path.resolve(__dirname, "../../dist/client/"), {
+      maxage: 0,
+      defer: false,
+    })
   );
 
   router.use((ctx) => {
