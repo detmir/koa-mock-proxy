@@ -22,6 +22,10 @@ export const addAvailableScenario = (scenario) => {
   availableScenarios.push(scenario);
 };
 
+export const addAvailableScenarios = (scenarios) => {
+  [].push.apply(availableScenarios, scenarios);
+};
+
 export const getAvailableScenarios = () => [...availableScenarios];
 
 export const setScenariosData = (key, value) => {
