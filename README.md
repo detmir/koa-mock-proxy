@@ -25,9 +25,9 @@ You are free to use all possibilities of Koa (custom middlewares like [koa-route
 Mocks are stored in file system in `mocksDirectory`. The exact location depends on http method, uri path,
 scenario and query location.
 
-Location format:
+File path format:
 
-`[path]_[httpMethod]_[pathSlug][.scenario]*[.paramName=paramValue]*.[json|js]`
+`[path]/[httpMethod]_[pathSlug][.scenario]*[.paramName=paramValue]*.[json|js]`
 
 Some rules to mention:
  * Query parameters are optional. If parameter is not specified, it can be any value.
@@ -39,6 +39,12 @@ Examples of transforming request to file location:
  * `GET /products/attributes-names` => `/products/GET_attributes-names.json`
  * `GET /products/test.gif` => `/products/GET_test_gif.json`
  * `PUT /products/attributes?a=b&c=d` => `/products/POST_attributes.a=b.c=d.json`
+
+### index.js file
+
+Also, if index.js exists in target directory, default middleware from there will be called first.
+
+If middleware from index.js will call `next()` function, the library will look for another suitable file that can be matched with URL.
 
 ## Working modes
 

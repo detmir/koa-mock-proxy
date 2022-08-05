@@ -2,6 +2,7 @@ import fs from "fs";
 
 import { MockFileContents, MockProxyOptions } from "../types";
 import { Context } from "koa";
+import compose from "koa-compose";
 import { FileLocator } from "../utils/FileLocator";
 import { log } from "../utils/log";
 import { encodeMockBody } from "../utils/encodeMockBody";
@@ -90,28 +91,53 @@ const findFileForRead = async (ctx, options) => {
   return `${directory}/${filesWithWeights[0].filename}` || null;
 };
 
-const putMockToCtx = async (
-  ctx,
-  options: MockProxyOptions
-): Promise<MockFileContents> => {
-  const matchedFile = await findFileForRead(ctx, options);
+const readDirectoryIndexFile =
+  (options: MockProxyOptions) => async (ctx, next) => {
+    const fileLocator = new FileLocator(options, ctx);
 
-  if (matchedFile) {
-    const extension = matchedFile.split(".").at(-1);
+    const directory = fileLocator.getMockDirectory();
 
-    if (!fileReaders.hasOwnProperty(extension)) {
-      throw new Error(`Unsupported extension ${extension}!`);
+    const indexFile = `${directory}/index.js`;
+
+    try {
+      await fs.promises.access(indexFile, fs.constants.R_OK);
+    } catch {
+      log(
+        "debug",
+        `index file for ${fileLocator.getMockDirectory()} doesn't exists`
+      );
+
+      return next();
     }
 
-    return await fileReaders[extension](matchedFile, ctx);
-  } else {
-    throw new Error("Can not find mock file!");
-  }
-};
+    const js = require(indexFile);
 
-const replyWithMock = async (ctx, options: MockProxyOptions) => {
+    return js(ctx, next);
+  };
+
+const putMockToCtx = (options: MockProxyOptions) =>
+  compose([
+    readDirectoryIndexFile(options),
+    async (ctx): Promise<MockFileContents> => {
+      const matchedFile = await findFileForRead(ctx, options);
+
+      if (matchedFile) {
+        const extension = matchedFile.split(".").at(-1);
+
+        if (!fileReaders.hasOwnProperty(extension)) {
+          throw new Error(`Unsupported extension ${extension}!`);
+        }
+
+        return await fileReaders[extension](matchedFile, ctx);
+      } else {
+        throw new Error("Can not find mock file!");
+      }
+    },
+  ]);
+
+const replyWithMock = (options: MockProxyOptions) => async (ctx, next) => {
   try {
-    await putMockToCtx(ctx, options);
+    await putMockToCtx(options)(ctx, next);
     ctx.state.responseSource = "mock";
   } catch (e) {
     log("info", `[Read mock] Mock read error: ${ctx.url} ${e.message}`, ctx);
@@ -177,5 +203,5 @@ export const mockMiddleware =
       return next();
     }
 
-    return replyWithMock(ctx, options);
+    return replyWithMock(options)(ctx, next);
   };

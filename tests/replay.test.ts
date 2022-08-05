@@ -83,6 +83,16 @@ describe("Tests in replay mode", () => {
       .expect(200, getPlainTextMock());
   });
 
+  it("Should replay from index file", async () => {
+    await request(proxy.server)
+      .get("/indexfile/indexcontent")
+      .expect(200, "indexcontent");
+  });
+
+  it("Should go through index file if next is called", async () => {
+    await request(proxy.server).get("/indexfile/next").expect(200, "next");
+  });
+
   it("Should replay errors correctly", async () => {
     await request(proxy.server).get("/500").expect(500, getErrorBodyText());
   });
