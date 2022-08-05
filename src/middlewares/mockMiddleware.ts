@@ -35,6 +35,21 @@ const fileReaders = {
   },
 };
 
+const getFilenameWeight = (filename: string) => {
+  // remove first part and extension
+  const conditionalFragments = filename.split(".").slice(0, -1);
+
+  return (
+    conditionalFragments
+      // filter by query parameters adds 10 to weight
+      // filter by scenario adds 100 to weight
+      .reduce<number>(
+        (acc, fragment) => acc + (fragment.includes("=") ? 10 : 100),
+        0
+      )
+  );
+};
+
 const findFileForRead = async (ctx, options) => {
   const fileLocator = new FileLocator(options, ctx);
 
@@ -44,15 +59,35 @@ const findFileForRead = async (ctx, options) => {
 
   const files = await fs.promises.readdir(directory, { withFileTypes: true });
 
-  const file = files.find((file) => {
-    if (!file.isFile()) {
-      return false;
-    }
+  const filesWithWeights = files
+    .filter((file) => {
+      if (!file.isFile()) {
+        return false;
+      }
 
-    return fileLocator.isFileMatched(file.name);
-  });
+      return fileLocator.isFileMatched(file.name);
+    })
+    .map((file) => ({
+      filename: file.name,
+      //find the most specific filename
+      weight: getFilenameWeight(file.name),
+    }));
 
-  return file ? `${directory}/${file.name}` : null;
+  if (!filesWithWeights.length) {
+    return null;
+  }
+
+  filesWithWeights.sort(
+    ({ weight: weight1 }, { weight: weight2 }) => weight2 - weight1
+  );
+
+  log(
+    "debug",
+    `Appropriate files found for request: ${JSON.stringify(filesWithWeights)}`,
+    ctx
+  );
+
+  return `${directory}/${filesWithWeights[0].filename}` || null;
 };
 
 const putMockToCtx = async (

@@ -2,7 +2,7 @@ import request from "supertest";
 import Koa from "koa";
 import { readFile } from "fs/promises";
 import { getErrorBodyText, getJsonMock, getPlainTextMock } from "./testserver";
-import { mockProxyMiddleware } from "../src";
+import { mockProxyMiddleware, setActiveScenarios } from "../src";
 import { startApplication } from "./utils/startApplication";
 
 let proxy: Awaited<ReturnType<typeof startApplication>> | null = null;
@@ -29,11 +29,13 @@ describe("Tests in replay mode", () => {
   });
 
   it("Should replay JS files correctly", async () => {
-    await request(proxy.server).get("/jsFile?a=b").expect(200, {
-      query: {
-        a: 'b'
-      }
-    });
+    await request(proxy.server)
+      .get("/jsFile?a=b")
+      .expect(200, {
+        query: {
+          a: "b",
+        },
+      });
   });
 
   it("Should replay request with parameters if no requests in mock", async () => {
@@ -42,6 +44,26 @@ describe("Tests in replay mode", () => {
 
   it("Should replay request with parameters", async () => {
     await request(proxy.server).get("/params?a=b").expect(200, getJsonMock());
+  });
+
+  it("Should find the most specific mock with multiple query params", async () => {
+    await request(proxy.server)
+      .get("/params?a=b&c=d")
+      .expect(200, { content: "a=b,c=d" });
+  });
+
+  it("Should find the most specific mock with multiple query params", async () => {
+    await request(proxy.server)
+      .get("/params?a=b&c=d")
+      .expect(200, { content: "a=b,c=d" });
+  });
+
+  it("Should find the most specific mock with multiple query params and query", async () => {
+    await setActiveScenarios("test");
+    await request(proxy.server)
+      .get("/params?a=b&c=d")
+      .expect(200, { content: "test" });
+    await setActiveScenarios([]);
   });
 
   it("Should not replay request with wrong parameters", async () => {
