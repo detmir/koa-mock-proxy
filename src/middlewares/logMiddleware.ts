@@ -106,7 +106,7 @@ export const getLogs = (filters: LogFilters = {}) => {
         const isFound =
           item.method.includes(filters.search) ||
           item.url.includes(filters.search) ||
-          item.contentType.includes(filters.search) ||
+          (item.contentType || "").includes(filters.search) ||
           String(item.method).includes(filters.search);
 
         if (!isFound) {

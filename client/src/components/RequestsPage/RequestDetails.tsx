@@ -77,7 +77,13 @@ const RequestDetailsBody = ({
         <Typography.Title level={5}>Response body</Typography.Title>
       </Space>
       <Space direction="vertical">
-        <div className={styles.bodyText}>{requestDetails.response}</div>
+        <div className={styles.bodyText}>
+          <Typography.Paragraph code>
+            {typeof requestDetails.response === "string"
+              ? requestDetails.response
+              : JSON.stringify(requestDetails.response, null, 4)}
+          </Typography.Paragraph>
+        </div>
       </Space>
     </Space>
   );

@@ -28,6 +28,8 @@ const columns = [
     title: "Url",
     dataIndex: "url",
     key: "url",
+    width: 500,
+    render: (url) => <div style={{ wordBreak: "break-all" }}>{url}</div>,
   },
   {
     title: "Content-type",
