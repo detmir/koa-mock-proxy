@@ -6,6 +6,10 @@ import compose from "koa-compose";
 import { FileLocator } from "../utils/FileLocator";
 import { log } from "../utils/log";
 import { encodeMockBody } from "../utils/encodeMockBody";
+import {
+  getActiveScenarios,
+  getAvailableScenarios,
+} from "../utils/scenarioStorage";
 
 const fileReaders = {
   json: async (path, ctx) => {
@@ -137,6 +141,8 @@ const putMockToCtx = (options: MockProxyOptions) =>
 
 const replyWithMock = (options: MockProxyOptions) => async (ctx, next) => {
   try {
+    ctx.state.activeScenarios = getActiveScenarios();
+
     await putMockToCtx(options)(ctx, next);
     ctx.state.responseSource = "mock";
   } catch (e) {
