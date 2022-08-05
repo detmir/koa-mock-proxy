@@ -59,16 +59,18 @@ Mode can be determined :
 The simplest implementation (proxy and record all requests):
 
 ```js
-  import Koa from 'koa';
-  import mockProxy from 'koa-mock-proxy';
+import Koa from 'koa';
+import { mockProxyMiddleware } from '@detmir/koa-mock-proxy';
 
-  const server = new Koa();
+const server = new Koa();
 
-  server.use(mockProxy({
-    targetUrl: 'http://my-service.com/api'
-  }));
+server.use(mockProxyMiddleware({
+  mocksDirectory: './mocks/',
+  targetUrl: 'http://my-service.com/api'
+}));
 
-  server.listen(9000);
+server.listen(9000);
+
 ```
 
 Proxy only a specific route:
