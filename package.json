@@ -1,6 +1,6 @@
 {
   "name": "@detmir/koa-mock-proxy",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "A set of tools for creating proxy servers with possibility for record and replay responses.",
   "author": "Alexey Baranov",
   "license": "ISC",
