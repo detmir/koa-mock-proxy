@@ -23,7 +23,7 @@ const Headers = ({ headers, title }: HeadersProps) => (
   <Descriptions title={title} column={1} size="small" bordered>
     {Object.entries(headers).map(([headerName, headerValue]) => (
       <Descriptions.Item label={headerName} labelStyle={labelStyle}>
-        <div className={styles.bodyText}>
+        <div className={styles.headerValue}>
           {Array.isArray(headerValue) ? headerValue.join(",") : headerValue}
         </div>
       </Descriptions.Item>

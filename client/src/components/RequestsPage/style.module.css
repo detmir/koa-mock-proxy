@@ -3,3 +3,8 @@
   overflow-wrap: anywhere;
   white-space: pre;
 }
+
+.headerValue {
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
