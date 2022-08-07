@@ -1,50 +1,33 @@
 # Koa mock proxy
 
-`koa-mock-proxy` is a set of tools for creating proxy servers with possibility of record and replay responses.
+`koa-mock-proxy` is a tool for creating proxy servers with possibility of record and replay responses (mocks).
 
-This can be useful for:
- * service/integration tests (for example, where you want test only frontend)
- * e2e tests where you want to isolate chosen endpoints
- * Manually testing application without backend or for a specific scenario
+It can be useful for:
+ * service/integration tests (for example, when you want test only frontend)
+ * e2e tests where you want to isolate only chosen endpoints
+ * Manually testing application without backend or for a specific scenario that difficult to reproduce
  * Logging activity between services
 
 You are free to use all possibilities of Koa (custom middlewares like [koa-router](https://www.npmjs.com/package/koa-router)).
 
 ## Features
  * Proxy http requests
- * Record requests and responses (body and headers) into human readable files
- * Log proxy requests
- * Manage different test scenarios (depending on a scenario, same endpoint can give different response).
+ * Record requests and responses (body and headers) into human-readable files
+ * Log proxy requests, view it using UI
+ * Manage different test scenarios (depending on a scenario, same endpoint can return different responses).
 
-## API reference
+## Main advantages
 
-[API reference is here](./docs/api.md)
+ * Public API made in very familiar way for many JS developers (by applying middlewares)
+ * Recorded mocks suitable to put to version control system, easy to understand and update
+ * Composability with other libraries and custom mocks code
+ * UI for easier debugging and record mocks
 
-## Mocks format and location
+## [API reference](./docs/api.md)
 
-Mocks are stored in file system in `mocksDirectory`. The exact location depends on http method, uri path,
-scenario and query location.
+## [Mocks format and location](./docs/mocks.md)
 
-File path format:
-
-`[path]/[httpMethod]_[pathSlug][.scenario]*[.paramName=paramValue]*.[json|js]`
-
-Some rules to mention:
- * Query parameters are optional. If parameter is not specified, it can be any value.
- * If scenarios are not specified, it can be any scenario.
- * Prohibited symbols for filenames (for Windows, Linux or Macos) will be replaced to `_` (underscore)
-
-Examples of transforming request to file location:
-
- * `GET /products/attributes-names` => `/products/GET_attributes-names.json`
- * `GET /products/test.gif` => `/products/GET_test_gif.json`
- * `PUT /products/attributes?a=b&c=d` => `/products/POST_attributes.a=b.c=d.json`
-
-### index.js file
-
-Also, if index.js exists in target directory, default middleware from there will be called first.
-
-If middleware from index.js will call `next()` function, the library will look for another suitable file that can be matched with URL.
+## [Mocks scenarios](./docs/scenarios.md)
 
 ## Working modes
 
@@ -55,7 +38,7 @@ Server can work in the following modes:
 3. `replayOrProxy`. Server read response from file. If there are no matching file, go to `targetUrl`.
 4. `proxy`. Server just proxy to the `targetUrl`
 
-Mode can be determined :
+Mode is determined by:
 1. `mode` param to mockProxy middleware
 2. Using middleware `mockProxyConfig` (must be defined before `mockProxy` middleware)
 3. Using environment variable `KOA_MOCK_PROXY_MODE`
@@ -116,3 +99,20 @@ Proxy only a specific route:
 ## Debugging
 
 You can set env variable `DEBUG_PROXY=true` if you want to see in console all requests coming through mock server.
+
+## UI
+
+![UI](./docs/ui.png)
+
+In UI you can:
+ * Explore requests log and response source (mock vs proxy)
+ * Set active scenarios
+ * Record selected requests to mock file (WIP)
+
+For using UI you need to apply [controlMiddleware](./docs/api.md):
+
+``
+server.use(controlMiddleware({ path: '/mockproxy' }));
+``
+
+After applying, UI will be available at the path `/mockproxy`.

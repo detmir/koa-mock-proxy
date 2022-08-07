@@ -22,7 +22,7 @@ export const addAvailableScenario = (scenario) => {
   availableScenarios.push(scenario);
 };
 
-export const addAvailableScenarios = (scenarios) => {
+export const addAvailableScenarios = (scenarios: string[]) => {
   [].push.apply(availableScenarios, scenarios);
 };
 

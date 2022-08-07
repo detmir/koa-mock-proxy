@@ -20,7 +20,11 @@ server.use(koaMockProxy({
 
 ### mockProxyConfigMiddleware(options: ControlMiddlewareOptions)
 
-Create default options for next `mockProxyMiddleware` middlewares.
+Creates default options for next `mockProxyMiddleware` middlewares.
+
+### scenariosMiddleware(Record<ScenarioName, Middleware>)
+
+Makes `Middleware` active only when scenario `ScenarioName` is active.
 
 ### controlMiddleware(options: { path?: string })
 
@@ -76,3 +80,21 @@ You can use different postfixes depending on a scenario or an incoming request (
 
 Determines whether is mock server can overwrite file in record mode.
 You can also redefine this value is mock file by adding file "overwrite"
+
+## Functions for managing mock scenarios
+
+### addAvailableScenarios(scenarios: string[])
+
+Adds selected scenarios to the available scenarios list.
+
+### setActiveScenarios(scenarios: string[])
+
+Makes selected scenarios active.
+
+### getScenariosData(key: string) => any
+
+Returns data for current scenario session.
+
+### setScenariosData(key: string, value: string) => void
+
+Sets data for storing in the current scenario session.
