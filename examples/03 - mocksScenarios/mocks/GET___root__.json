@@ -1,0 +1,9 @@
+{
+  "code": 200,
+  "requestUrl": "/",
+  "headers": {
+    "content-type": "text/html; charset=utf-8"
+  },
+  "bodyEncoding": "utf-8",
+  "body": "<h1>This is normal response</h1>"
+}

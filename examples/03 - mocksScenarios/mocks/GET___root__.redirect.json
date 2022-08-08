@@ -1,0 +1,9 @@
+{
+  "code": 302,
+  "requestUrl": "/",
+  "headers": {
+    "Location": "https://youtu.be/dQw4w9WgXcQ"
+  },
+  "bodyEncoding": "html",
+  "body": ""
+}

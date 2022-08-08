@@ -1,0 +1,8 @@
+{
+  "code": 200,
+  "headers": {
+    "content-type": "text/html; charset=utf-8"
+  },
+  "bodyEncoding": "utf-8",
+  "body": "<html><body><h1>Custom news №3</h1></body></html>"
+}

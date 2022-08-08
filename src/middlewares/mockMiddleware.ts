@@ -1,4 +1,5 @@
 import fs from "fs";
+import path from "path";
 
 import { MockFileContents, MockProxyOptions } from "../types";
 import { Context } from "koa";
@@ -60,7 +61,7 @@ const findFileForRead = async (ctx, options) => {
 
   log("debug", `Mock filename: ${fileLocator.getMockPath()}`, ctx);
 
-  const directory = fileLocator.getMockDirectory();
+  const directory = path.resolve(fileLocator.getMockDirectory());
 
   const files = await fs.promises.readdir(directory, { withFileTypes: true });
 
@@ -99,7 +100,7 @@ const readDirectoryIndexFile =
   (options: MockProxyOptions) => async (ctx, next) => {
     const fileLocator = new FileLocator(options, ctx);
 
-    const directory = fileLocator.getMockDirectory();
+    const directory = path.resolve(fileLocator.getMockDirectory());
 
     const indexFile = `${directory}/index.js`;
 
