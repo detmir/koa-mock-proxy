@@ -7,9 +7,17 @@ export const useRequestDetails = () => {
   const [requestDetails, setRequestDetails] = useState<RequestDetails | null>(
     null
   );
+  const [loading, setLoading] = useState(false);
 
   const loadData = async (id: string) => {
-    const data = await apiRequest({ url: `logs/${id}` });
+    setLoading(true);
+    let data = null;
+
+    try {
+      data = await apiRequest({ url: `logs/${id}` });
+    } finally {
+      setLoading(false);
+    }
 
     setRequestDetails(data);
   };
@@ -21,5 +29,5 @@ export const useRequestDetails = () => {
   };
   const onClose = () => setVisible(false);
 
-  return { isVisible, onOpen, onClose, requestDetails };
+  return { isVisible, onOpen, onClose, requestDetails, loading };
 };

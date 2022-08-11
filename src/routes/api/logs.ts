@@ -20,6 +20,11 @@ logsRouter.get("/logs/:requestId", (ctx) => {
 
   const requestDetails = getRequestDetails(requestId);
 
+  if (!requestDetails) {
+    ctx.status = 204;
+    return;
+  }
+
   if (requestDetails.request instanceof Buffer) {
     requestDetails.request = requestDetails.response.toString("base64url");
   }

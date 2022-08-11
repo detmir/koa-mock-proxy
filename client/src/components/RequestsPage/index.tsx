@@ -47,7 +47,8 @@ const columns = [
 
 export const RequestsPage = () => {
   const { requests, onChangeSearch } = useLoadRequests();
-  const { isVisible, onOpen, onClose, requestDetails } = useRequestDetails();
+  const { isVisible, onOpen, onClose, requestDetails, loading } =
+    useRequestDetails();
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const hasSelected = selectedRowKeys.length > 0;
@@ -98,6 +99,7 @@ export const RequestsPage = () => {
 
       <RequestDetails
         isVisible={isVisible}
+        loading={loading}
         onClose={onClose}
         requestDetails={requestDetails}
       />

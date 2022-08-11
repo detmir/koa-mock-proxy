@@ -1,5 +1,5 @@
 import React from "react";
-import { Descriptions, Drawer, Space, Spin, Typography } from "antd";
+import { Descriptions, Drawer, Space, Spin, Typography, Result } from "antd";
 import type { RequestDetails as RequestDetailsType } from "../../../middlewares/logMiddleware";
 import * as styles from "./style.module.css";
 
@@ -33,10 +33,21 @@ const Headers = ({ headers, title }: HeadersProps) => (
 
 const RequestDetailsBody = ({
   requestDetails,
+  loading,
 }: {
   requestDetails?: RequestDetailsType;
+  loading: boolean;
 }) => {
   if (!requestDetails) {
+    if (!loading) {
+      return (
+        <Result
+          status="error"
+          title="Error happened! Probably record details has been already cleaned."
+        />
+      );
+    }
+
     return <Spin />;
   }
 
@@ -91,6 +102,7 @@ const RequestDetailsBody = ({
 
 export const RequestDetails = ({
   isVisible,
+  loading,
   onClose,
   requestDetails,
 }: RequestDetailsProps) => (
@@ -101,6 +113,6 @@ export const RequestDetails = ({
     onClose={onClose}
     visible={isVisible}
   >
-    <RequestDetailsBody requestDetails={requestDetails} />
+    <RequestDetailsBody loading={loading} requestDetails={requestDetails} />
   </Drawer>
 );
