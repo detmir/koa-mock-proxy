@@ -1,11 +1,23 @@
 import React, { useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
-import { Input, Table, Space, Button } from "antd";
+import { Input, Table, Space, Button, Tag } from "antd";
 import { useLoadRequests } from "./useLoadRequests";
 import dayjs from "dayjs";
 import { RequestDetails } from "./RequestDetails";
 import { useRequestDetails } from "./useRequestDetails";
 import { useRecordMocks } from "./useRecordMocks";
+
+const getStatusColor = (status) => {
+  if (status >= 400) {
+    return "error";
+  }
+
+  if (status >= 200 && status <= 299) {
+    return "success";
+  }
+
+  return "default";
+};
 
 const columns = [
   {
@@ -18,6 +30,7 @@ const columns = [
     title: "Status code",
     dataIndex: "status",
     key: "status",
+    render: (status) => <Tag color={getStatusColor(status)}>{status}</Tag>,
   },
   {
     title: "Method",
@@ -41,7 +54,7 @@ const columns = [
     dataIndex: "responseSource",
     key: "responseSource",
     render: (responseSource, { mode }) =>
-      [mode, responseSource].filter(Boolean).join(" / "),
+      [mode, responseSource ?? "-"].filter(Boolean).join(" / "),
   },
 ];
 
@@ -88,8 +101,14 @@ export const RequestsPage = () => {
         }}
         onRow={(record) => {
           return {
-            onClick: () => {
-              onOpen(record.id);
+            onClick: (event) => {
+              // prevent open panel on text selection
+              if (
+                !getSelection().toString() ||
+                !event.target.contains(getSelection().anchorNode)
+              ) {
+                onOpen(record.id);
+              }
             },
           };
         }}
