@@ -4,6 +4,7 @@ import {
   LogFilters,
 } from "../../middlewares/logMiddleware";
 import Router from "@koa/router";
+import { isTextContentType } from "../../utils/isTextContentType";
 
 export const logsRouter = new Router();
 
@@ -26,11 +27,23 @@ logsRouter.get("/logs/:requestId", (ctx) => {
   }
 
   if (requestDetails.request instanceof Buffer) {
-    requestDetails.request = requestDetails.response.toString("base64url");
+    const isText = isTextContentType(
+      requestDetails.request["content-type"] as string
+    );
+
+    requestDetails.request = requestDetails.response.toString(
+      isText ? "utf-8" : "base64url"
+    );
   }
 
   if (requestDetails.response instanceof Buffer) {
-    requestDetails.response = requestDetails.response.toString("base64url");
+    const isText = isTextContentType(
+      requestDetails.responseHeaders["content-type"] as string
+    );
+
+    requestDetails.response = requestDetails.response.toString(
+      isText ? "utf-8" : "base64url"
+    );
   }
 
   ctx.body = requestDetails;

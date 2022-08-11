@@ -61,7 +61,12 @@ export class MemoryLogStorage {
     return this.requestDetails.get(id) ?? null;
   }
 
-  putLogItem(ctx: Context, requestTimestamp: number) {
+  putLogItem(
+    ctx: Context,
+    requestTimestamp: number,
+    headers?: Context["headers"],
+    body?: Buffer
+  ) {
     const id = randomUUID();
 
     const logItem: LogItem = {
@@ -79,11 +84,14 @@ export class MemoryLogStorage {
     this.logs.push(logItem);
     this.shrinkLogSize();
 
+    const combinedBody = body ?? ctx.body ?? ctx.response.body;
+    const responseHeaders = headers ?? ctx.res.getHeaders();
+
     const requestDetails: RequestDetails = {
       requestHeaders: ctx.req.headers,
-      responseHeaders: ctx.res.getHeaders(),
+      responseHeaders,
       request: ctx.request.body,
-      response: (ctx.body || ctx.response.body) as string,
+      response: combinedBody as string | Buffer,
       logMessages: ctx.state.logMessages,
     };
 
@@ -127,10 +135,20 @@ export const getRequestDetails = (id: string) => {
 
 export const logMiddleware = () => async (ctx: Context, next: Next) => {
   const requestTimestamp = Date.now();
+
+  let headers, body;
+
+  ctx.res.on("data", (proxyBody) => {
+    body = proxyBody;
+  });
+  ctx.res.on("proxyHeaders", (proxyHeader) => {
+    headers = proxyHeader;
+  });
+
   const nextPromise = next();
 
   nextPromise.finally(() => {
-    storage.putLogItem(ctx, requestTimestamp);
+    storage.putLogItem(ctx, requestTimestamp, headers, body);
   });
 
   return nextPromise;

@@ -19,7 +19,7 @@ export const proxyMiddleware =
       https://github.com/chimurai/http-proxy-middleware/blob/master/src/handlers/response-interceptor.ts#L18
       */
       selfHandleResponse: true,
-      onProxyRes: responseInterceptor(async (responseBuffer) => {
+      onProxyRes: responseInterceptor(async (responseBuffer, proxyRes) => {
         log("info", `[Proxy] ${ctx.url}`, ctx);
 
         ctx.state.responseSource = "proxy";
@@ -32,6 +32,7 @@ export const proxyMiddleware =
 
         // генерирую событие данных, на которое может быть подписан наш автомок
         ctx.res.emit("data", buffer);
+        ctx.res.emit("proxyHeaders", proxyRes.headers);
 
         return buffer;
       }),
