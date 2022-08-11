@@ -23,6 +23,18 @@ You are free to use all possibilities of Koa (custom middlewares like [koa-route
  * Composability with other libraries and custom mocks code
  * UI for easier debugging and record mocks
 
+## Installation
+
+TODO: update this description after publishing in public repo
+
+Install using npm:
+
+```npm i @detmir/koa-mock-proxy```
+
+Also, it's necessary to install koa, if you don't have it in your project:
+
+```npm i koa```
+
 ## [API reference](./docs/api.md)
 
 ## [Mocks format and location](./docs/mocks.md)

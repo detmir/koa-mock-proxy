@@ -4,7 +4,7 @@
 
 All functions here return Koa middleware (`(ctx, next) => Promise`)
 
-### mockProxyMiddleware(options: MockProxyOptions)
+### mockProxyMiddleware([options: MockProxyOptions](#mock-proxy-options))
 
 Main middleware, for proxy/mock incoming requests.
 
@@ -18,7 +18,7 @@ server.use(koaMockProxy({
 }));
 ```
 
-### mockProxyConfigMiddleware(options: ControlMiddlewareOptions)
+### mockProxyConfigMiddleware([options: MockProxyOptions](#mock-proxy-options))
 
 Creates default options for next `mockProxyMiddleware` middlewares.
 
