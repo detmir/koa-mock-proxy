@@ -60,7 +60,7 @@ const getFilenameWeight = (filename: string) => {
   );
 };
 
-const findFileForRead = async (ctx, options) => {
+const findFilesForRead = async (ctx, options) => {
   const fileLocator = new FileLocator(options, ctx);
 
   log("debug", `Mock filename: ${fileLocator.getMockPath()}`, ctx);
@@ -138,7 +138,7 @@ const putMockToCtx = (options: MockProxyOptions) =>
   compose([
     readDirectoryIndexFile(options),
     async (ctx, next): Promise<MockFileContents | void> => {
-      const matchedFiles = await findFileForRead(ctx, options);
+      const matchedFiles = await findFilesForRead(ctx, options);
 
       const matchedFileMiddlewares = matchedFiles.map((matchedFile) =>
         matchedFileMiddleware(matchedFile)
@@ -188,9 +188,9 @@ const writeMock = async (
   };
 
   try {
-    let fileName = await findFileForRead(ctx, options);
+    let files = await findFilesForRead(ctx, options);
 
-    if (!fileName) {
+    if (!files || !files.length) {
       throw new Error("Mock not found");
     }
 
