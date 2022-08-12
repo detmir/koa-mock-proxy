@@ -102,4 +102,20 @@ describe("Tests in replay mode", () => {
       .get("/notExistingRoute")
       .expect(404, "Not Found");
   });
+
+  it("If JS file calls next(), go to the next mock", async () => {
+    await request(proxy.server).get("/next/next").expect(200, "next");
+  });
+
+  it("If JS file don't call next(), don't go to the next mock", async () => {
+    await request(proxy.server)
+      .get("/next/next?noNext=1")
+      .expect(200, "noNext");
+  });
+
+  it("JS file can modify response after next", async () => {
+    await request(proxy.server)
+      .get("/next/next?after=1")
+      .expect(200, "afterNext");
+  });
 });

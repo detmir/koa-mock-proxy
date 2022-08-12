@@ -28,6 +28,7 @@ If multiple files match http request, the system choose the most specific file.
 It will be determined by the biggest weight of the filename:
 * `1 scenario` increases weight by `100`
 * `1 query parameter` increases weight by `10`
+* `.js extension` increases weight by `1`
 
 ## index.js file
 
@@ -67,7 +68,7 @@ If scenario `empty` is active:
 
 If mock file has `js` extension, it must return middleware function `(ctx, next) => Promise`.
 
-If middleware in `index.js` calls `next`, the library will look for a more specific mock file.
+If middleware calls `next`, the library will look for a more specific mock file.
 
 Example of index.js file:
 

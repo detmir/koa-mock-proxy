@@ -7,10 +7,7 @@ import compose from "koa-compose";
 import { FileLocator } from "../utils/FileLocator";
 import { log } from "../utils/log";
 import { encodeMockBody } from "../utils/encodeMockBody";
-import {
-  getActiveScenarios,
-  getAvailableScenarios,
-} from "../utils/scenarioStorage";
+import { getActiveScenarios } from "../utils/scenarioStorage";
 
 const fileReaders = {
   json: async (path, ctx) => {
@@ -34,10 +31,10 @@ const fileReaders = {
       ctx.body = fileContents.body;
     }
   },
-  js: async (path, ctx) => {
+  js: async (path, ctx, next) => {
     const js = require(path);
 
-    return js(ctx);
+    return js(ctx, next);
   },
 };
 
@@ -45,13 +42,20 @@ const getFilenameWeight = (filename: string) => {
   // remove first part and extension
   const conditionalFragments = filename.split(".").slice(0, -1);
 
+  let weight = 0;
+
+  // js should have more priority than json
+  if (filename.endsWith("js")) {
+    weight += 1;
+  }
+
   return (
     conditionalFragments
       // filter by query parameters adds 10 to weight
       // filter by scenario adds 100 to weight
       .reduce<number>(
         (acc, fragment) => acc + (fragment.includes("=") ? 10 : 100),
-        0
+        weight
       )
   );
 };
@@ -75,7 +79,7 @@ const findFileForRead = async (ctx, options) => {
     })
     .map((file) => ({
       filename: file.name,
-      //find the most specific filename
+      // find the most specific filename
       weight: getFilenameWeight(file.name),
     }));
 
@@ -93,7 +97,7 @@ const findFileForRead = async (ctx, options) => {
     ctx
   );
 
-  return `${directory}/${filesWithWeights[0].filename}` || null;
+  return filesWithWeights.map(({ filename }) => `${directory}/${filename}`);
 };
 
 const readDirectoryIndexFile =
@@ -120,23 +124,34 @@ const readDirectoryIndexFile =
     return js(ctx, next);
   };
 
+const matchedFileMiddleware = (matchedFile) => async (ctx, next) => {
+  const extension = matchedFile.split(".").at(-1);
+
+  if (!fileReaders.hasOwnProperty(extension)) {
+    throw new Error(`Unsupported extension ${extension}!`);
+  }
+
+  return await fileReaders[extension](matchedFile, ctx, next);
+};
+
 const putMockToCtx = (options: MockProxyOptions) =>
   compose([
     readDirectoryIndexFile(options),
-    async (ctx): Promise<MockFileContents> => {
-      const matchedFile = await findFileForRead(ctx, options);
+    async (ctx, next): Promise<MockFileContents | void> => {
+      const matchedFiles = await findFileForRead(ctx, options);
 
-      if (matchedFile) {
-        const extension = matchedFile.split(".").at(-1);
+      const matchedFileMiddlewares = matchedFiles.map((matchedFile) =>
+        matchedFileMiddleware(matchedFile)
+      );
 
-        if (!fileReaders.hasOwnProperty(extension)) {
-          throw new Error(`Unsupported extension ${extension}!`);
-        }
+      const composedMiddleware = compose([
+        ...matchedFileMiddlewares,
+        () => {
+          throw new Error("Can not find mock file!");
+        },
+      ]);
 
-        return await fileReaders[extension](matchedFile, ctx);
-      } else {
-        throw new Error("Can not find mock file!");
-      }
+      return composedMiddleware(ctx, next);
     },
   ]);
 
