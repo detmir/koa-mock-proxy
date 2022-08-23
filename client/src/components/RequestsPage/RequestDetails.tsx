@@ -58,7 +58,7 @@ const RequestDetailsBody = ({
           <Space>
             <Typography.Title level={5}>Log messages</Typography.Title>
           </Space>
-          <div>
+          <div className={styles.logs}>
             {requestDetails.logMessages.map((message) => (
               <>
                 {message}

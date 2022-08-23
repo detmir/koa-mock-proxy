@@ -8,3 +8,7 @@
   word-break: break-all;
   overflow-wrap: anywhere;
 }
+
+.logs {
+  word-break: break-all;
+}
