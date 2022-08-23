@@ -34,7 +34,16 @@ const fileReaders = {
   js: async (path, ctx, next) => {
     const js = require(path);
 
-    return js(ctx, next);
+    try {
+      await js(ctx, next);
+    } catch (error) {
+      log("debug", `Caught JS error in mock ${path}`);
+
+      ctx.status = 400;
+      ctx.body = {
+        message: error.message ?? "Unknown error",
+      };
+    }
   },
 };
 

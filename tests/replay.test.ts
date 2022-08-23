@@ -38,6 +38,12 @@ describe("Tests in replay mode", () => {
       });
   });
 
+  it("JS file with exception should have 400 error", async () => {
+    await request(proxy.server)
+      .get("/jsFileCatch")
+      .expect(400, { message: "Test error" });
+  });
+
   it("Should replay request with parameters if no requests in mock", async () => {
     await request(proxy.server).get("/?a=b").expect(200, getJsonMock());
   });
