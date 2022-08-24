@@ -18,7 +18,9 @@
     "postinstall": "npm --prefix client install"
   },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE",
+    "NOTICE"
   ],
   "dependencies": {
     "@koa/router": "^10.1.1",
