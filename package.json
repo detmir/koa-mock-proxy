@@ -16,10 +16,18 @@
     "lint:fix": "eslint --fix ./src ./tests",
     "prettier": "prettier --write ./src/"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/detmir/koa-mock-proxy"
+  },
+  "keywords": [
+    "koa", "mocks", "proxy", "testing", "mock-server"
+  ],
   "files": [
     "dist",
     "LICENSE",
-    "NOTICE"
+    "NOTICE",
+    "docs"
   ],
   "dependencies": {
     "@koa/router": "^10.1.1",
