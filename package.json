@@ -14,8 +14,7 @@
     "test": "jest",
     "lint": "eslint ./src ./tests",
     "lint:fix": "eslint --fix ./src ./tests",
-    "prettier": "prettier --write ./src/",
-    "postinstall": "npm --prefix client install"
+    "prettier": "prettier --write ./src/"
   },
   "files": [
     "dist",
