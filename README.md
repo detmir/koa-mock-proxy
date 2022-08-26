@@ -5,7 +5,7 @@
 It can be useful for:
  * service/integration tests (for example, when you want test only frontend)
  * e2e tests where you want to isolate only chosen endpoints
- * Manually testing application without backend or for a specific scenario that difficult to reproduce
+ * Manually testing application without backend or for a specific scenario that's difficult to reproduce
  * Logging activity between services
 
 You are free to use all possibilities of Koa (custom middlewares like [koa-router](https://www.npmjs.com/package/koa-router)).
@@ -13,15 +13,15 @@ You are free to use all possibilities of Koa (custom middlewares like [koa-route
 ## Features
  * Proxy http requests
  * Record requests and responses (body and headers) into human-readable files
- * Log proxy requests, view it using UI
- * Manage different test scenarios (depending on a scenario, same endpoint can return different responses).
+ * Log proxy requests, viewing it using the UI
+ * Manage different test scenarios (depending on a scenario, the same endpoint can return different responses).
 
 ## Main advantages
 
- * Public API made in very familiar way for many JS developers (by applying middlewares)
- * Recorded mocks suitable to put to version control system, easy to understand and update
- * Composability with other libraries and custom mocks code
- * UI for easier debugging and record mocks
+ * A public API made in a very familiar way for many JS developers (by applying middleware)
+ * Recorded mocks suitable to put in a version control system, easy to understand and update
+ * Composability with other libraries and code from custom mocks
+ * UI for easier debugging and recording of mocks
 
 ## Installation
 
