@@ -37,7 +37,7 @@ Also, it's necessary to install koa, if you don't have it in your project:
 
 Full docs [are available here](https://detmir.github.io/koa-mock-proxy/)
 
-And [a lot of examples are here](http://localhost:3000/koa-mock-proxy/docs/examples)
+And [a lot of examples are here](https://detmir.github.io/koa-mock-proxy/docs/examples)
 
 ## Debugging
 
