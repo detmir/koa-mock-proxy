@@ -33,12 +33,6 @@ Also, it's necessary to install koa, if you don't have it in your project:
 
 ```npm i koa```
 
-## [API reference](./docs/api.md)
-
-## [Mocks format and location](./docs/mocks.md)
-
-## [Mocks scenarios](./docs/scenarios.md)
-
 ## Working modes
 
 Server can work in the following modes:
@@ -106,7 +100,7 @@ Proxy only a specific route:
   server.listen(9000);
 ```
 
-More complex examples are available [here](./examples/).
+More complex examples are available [here](https://github.com/detmir/koa-mock-proxy/tree/main/examples).
 
 ## Debugging
 
@@ -121,7 +115,7 @@ In UI you can:
  * Set active scenarios
  * Record selected requests to mock file (WIP)
 
-For using UI you need to apply [controlMiddleware](./docs/api.md):
+For using UI you need to apply [controlMiddleware](/docs/api):
 
 ``
 server.use(controlMiddleware({ path: '/mockproxy' }));
