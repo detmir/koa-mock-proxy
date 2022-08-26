@@ -28,12 +28,8 @@ function HomepageHeader() {
 }
 
 export default function Home(): JSX.Element {
-  const { siteConfig } = useDocusaurusContext();
   return (
-    <Layout
-      title={`${siteConfig.title}`}
-      description="Koa-mock-proxy is an easy and customizable mock server for JS world"
-    >
+    <Layout description="Koa-mock-proxy is an easy and customizable mock server for JS world">
       <HomepageHeader />
       <main>
         <HomepageFeatures />
