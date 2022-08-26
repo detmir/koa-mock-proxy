@@ -18,7 +18,7 @@ server.listen(9000);
 
 ```
 
-## Proxy only a specific route:
+## Proxy only a specific route
 
 ```js
   import Koa from 'koa';
