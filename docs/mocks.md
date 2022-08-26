@@ -22,7 +22,7 @@ Some rules to mention:
 * If you specify query params, it doesn't mean that matched request can not have other query params.
 * If there is no last part of path (path is `/`), `pathSlug` is `__root__`.
 * If scenarios are not specified, it can be any scenario.
-* Prohibited symbols for filenames (for Windows, Linux or Macos) will be replaced to `_` (underscore)
+* Prohibited symbols for filenames (for Windows, Linux or macOS) will be replaced to `_` (underscore)
 
 If multiple files match http request, the system choose the most specific file.
 It will be determined by the biggest weight of the filename:
