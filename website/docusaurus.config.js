@@ -8,8 +8,8 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 const config = {
   title: "Koa-mock-proxy",
   tagline: "Easy and customizable mock server for JS world",
-  url: "https://your-docusaurus-test-site.com",
-  baseUrl: "/",
+  url: "https://detmir.github.io",
+  baseUrl: "/koa-mock-proxy/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
@@ -57,6 +57,12 @@ const config = {
             docId: "intro",
             position: "left",
             label: "Docs",
+          },
+          {
+            type: "doc",
+            docId: "examples",
+            position: "left",
+            label: "Examples",
           },
           {
             href: "https://github.com/detmir/koa-mock-proxy",

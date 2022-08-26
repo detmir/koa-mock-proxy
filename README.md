@@ -33,92 +33,12 @@ Also, it's necessary to install koa, if you don't have it in your project:
 
 ```npm i koa```
 
-## Working modes
+## Docs
 
-Server can work in the following modes:
+Full docs [are available here](https://detmir.github.io/koa-mock-proxy/)
 
-1. `record`. Server proxy requests to the `targetUrl` and save responses to file.
-2. `replay`. Server read response from file. If there are no matching file, 404 error.
-3. `replayOrProxy`. Server read response from file. If there are no matching file, go to `targetUrl`.
-4. `proxy`. Server just proxy to the `targetUrl`
-
-Mode is determined by:
-1. `mode` param to mockProxy middleware
-2. Using middleware `mockProxyConfig` (must be defined before `mockProxy` middleware)
-3. Using environment variable `KOA_MOCK_PROXY_MODE`
-
-## Examples
-
-The simplest implementation (proxy and record all requests):
-
-```js
-import Koa from 'koa';
-import { mockProxyMiddleware } from '@detmir/koa-mock-proxy';
-
-const server = new Koa();
-
-server.use(mockProxyMiddleware({
-  mocksDirectory: './mocks/',
-  targetUrl: 'http://my-service.com/api'
-}));
-
-server.listen(9000);
-
-```
-
-Proxy only a specific route:
-
-```js
-  import Koa from 'koa';
-  import Router from '@koa/router';
-  import { mockProxy, mockProxyConfig } from 'koa-mock-proxy';
-
-  const server = new Koa();
-  server.use(mockProxyConfig({
-    targetUrl: 'http://my-service.com/api'
-  }))
-
-  const userRouter = new Router();
-  // This route will record or replay depending on global configuration
-  userRouter.post('/users', mockProxy());
-
-  // This route will replay or proxy
-  userRouter.post('/users', mockProxy({ mode: 'replayOrProxy' }));
-
-  // this route proxy to custom url
-  userRouter.get('/user/:id', mockProxy({
-    mode: 'record',
-    targetUrl: 'http://my-service2.com/api'
-  }));
-
-  server.use(userRouter.routes());
-
-  server.use(koaMockProxy({
-    targetUrl: 'http://my-service.com/api'
-  }));
-
-  server.listen(9000);
-```
-
-More complex examples are available [here](https://github.com/detmir/koa-mock-proxy/tree/main/examples).
+And [a lot of examples are here](http://localhost:3000/koa-mock-proxy/docs/examples)
 
 ## Debugging
 
 You can set env variable `DEBUG_PROXY=true` if you want to see in console all requests coming through mock server.
-
-## UI
-
-![UI](./docs/ui.png)
-
-In UI you can:
- * Explore requests log and response source (mock vs proxy)
- * Set active scenarios
- * Record selected requests to mock file (WIP)
-
-For using UI you need to apply [controlMiddleware](/docs/api):
-
-``
-server.use(controlMiddleware({ path: '/mockproxy' }));
-``
-
-After applying, UI will be available at the path `/mockproxy`.
