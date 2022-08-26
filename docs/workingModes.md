@@ -2,10 +2,10 @@
 
 Server can work in the following modes:
 
-1. `record`. Server proxy requests to the `targetUrl` and save responses to file.
-2. `replay`. Server read response from file. If there are no matching file, 404 error.
-3. `replayOrProxy`. Server read response from file. If there are no matching file, go to `targetUrl`.
-4. `proxy`. Server just proxy to the `targetUrl`
+1. `record`. Server proxies requests to the `targetUrl` and saves responses to file.
+2. `replay`. Server reads response from file. If there are no matching files, 404 error.
+3. `replayOrProxy`. Server reads response from file. If there are no matching files, go to `targetUrl`.
+4. `proxy`. Server just proxies to the `targetUrl`
 
 Mode is determined by:
 1. `mode` param to mockProxy middleware

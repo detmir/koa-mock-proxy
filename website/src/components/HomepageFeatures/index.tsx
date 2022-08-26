@@ -14,9 +14,9 @@ const FeatureList: FeatureItem[] = [
     Img: require("./img/structure.png").default,
     description: (
       <>
-        Mocks are stored in file system, as JSON or files.{" "}
+        Mocks are stored in file system as JSON or JS files.{" "}
         <a href="docs/mocks">Directory structure</a>
-        &nbsp;is nested and suitable for very large projects.
+        &nbsp;is nested and suitable of any scale.
       </>
     ),
   },
@@ -24,7 +24,7 @@ const FeatureList: FeatureItem[] = [
     title: "Built-in UI",
     Img: require("./img/ui.png").default,
     description: (
-      <>Use UI for view request logs, recording mocks and manage scenarios.</>
+      <>Use UI to view request logs, record mocks and manage scenarios.</>
     ),
   },
   {
