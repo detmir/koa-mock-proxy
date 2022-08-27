@@ -1,6 +1,6 @@
 {
   "name": "koa-mock-proxy",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "description": "A set of tools for creating proxy servers with possibility for record and replay responses.",
   "author": "Alexey Baranov",
   "license": "Apache-2.0",
@@ -63,8 +63,8 @@
   "peerDependencies": {
     "koa": "^2.13.4"
   },
-  "engines" : {
-    "node" : ">=16.0.0"
+  "engines": {
+    "node": ">=16.0.0"
   },
   "alias": {
     "process": {
