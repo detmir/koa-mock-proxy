@@ -41,7 +41,7 @@ describe("Global proxy config tests", () => {
       await startApplication(app);
 
     server = applicationServer;
-    stop = () => Promise.allSettled([stopTestServer, stopApplication]);
+    stop = () => Promise.allSettled([stopTestServer(), stopApplication()]);
   });
 
   afterAll(() => stop());

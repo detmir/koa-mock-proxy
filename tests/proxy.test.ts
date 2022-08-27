@@ -27,7 +27,7 @@ describe("Tests in proxy mode", () => {
   });
 
   it("Should proxy images", async () => {
-    const image = await readFile(`${__dirname}/testServer/testImg.gif`);
+    const image = await readFile(`${__dirname}/testserver/testImg.gif`);
 
     await request(proxy.server).get("/image").expect(200, image);
   });

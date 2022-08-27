@@ -78,7 +78,7 @@ describe("Tests in replay mode", () => {
   });
 
   it("Should replay correctly", async () => {
-    const image = await readFile(`${__dirname}/testServer/testImg.gif`);
+    const image = await readFile(`${__dirname}/testserver/testImg.gif`);
 
     await request(proxy.server).get("/image").expect(200, image);
   });
