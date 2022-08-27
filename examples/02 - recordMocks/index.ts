@@ -10,7 +10,7 @@ server.use(
   mockProxyMiddleware({
     targetUrl: "https://github.com/",
     mocksDirectory: "./mocks",
-    mode: "record",
+    mode: "replayOrProxy",
     recordOptions: {
       overwrite: true,
     },

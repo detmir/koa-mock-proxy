@@ -1,6 +1,10 @@
 import { createTestServer } from "../testserver";
 import Koa from "koa";
-import { mockProxyMiddleware, MockProxyUserOptions } from "../../src";
+import {
+  controlMiddleware,
+  mockProxyMiddleware,
+  MockProxyUserOptions,
+} from "../../src";
 import { startApplication } from "./startApplication";
 
 export const startTestMockServer = async (options: MockProxyUserOptions) => {
@@ -8,6 +12,8 @@ export const startTestMockServer = async (options: MockProxyUserOptions) => {
     await createTestServer();
 
   const app = new Koa();
+
+  app.use(controlMiddleware());
 
   app.use(
     mockProxyMiddleware({
@@ -20,6 +26,7 @@ export const startTestMockServer = async (options: MockProxyUserOptions) => {
 
   return {
     server,
+    app,
     stop: async () => {
       await Promise.all([stopProxyServer(), stopTestServer()]);
     },

@@ -15,5 +15,5 @@ Some mocks in `js`, some in `json`, both formats are supported.
 
 ## Running
 
-1. `ts-node index.ts`
+1. `npx ts-node index.ts`
 2. Visit http://localhost:9002/ in browser

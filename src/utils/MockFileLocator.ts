@@ -1,4 +1,4 @@
-import { MockProxyOptions } from "../types";
+import { HttpRequest, MockProxyUserOptions } from "../types";
 import { Context } from "koa";
 import { getActiveScenarios } from "./scenarioStorage";
 
@@ -8,22 +8,16 @@ const encodeFilename = (filename) => filename.replace(/[:"<>?|\\.]/g, "_");
 
 const ROOT_FILENAME = "__root__";
 
-interface MockFileRequest {
-  path: string;
-  method: string;
-  query: NodeJS.Dict<string | string[]>;
-}
-
 /**
  * Get mock path/filename from request data and options
  */
 export class MockFileLocator {
-  private readonly options: MockProxyOptions;
-  private readonly request: MockFileRequest;
+  private readonly options: MockProxyUserOptions;
+  private readonly request: HttpRequest;
 
-  constructor(options: MockProxyOptions, ctx: MockFileRequest) {
+  constructor(options: MockProxyUserOptions, request: HttpRequest) {
     this.options = options;
-    this.request = ctx;
+    this.request = request;
   }
 
   /**
@@ -38,7 +32,7 @@ export class MockFileLocator {
         urlPath[urlPath.length - 1] ?? ROOT_FILENAME
       )}`,
       postfix:
-        this.options.recordOptions.getFilenamePostfix?.(
+        this.options.recordOptions?.getFilenamePostfix?.(
           this.request as Context
         ) ?? null,
     };

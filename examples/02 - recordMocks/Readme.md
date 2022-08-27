@@ -2,7 +2,7 @@
 
 ## How to use:
 
-1. `ts-node index.ts`
+1. `npx ts-node index.ts`
 2. Visit http://localhost:9001/webscout in browser
 3. Visit some other pages in browser
 

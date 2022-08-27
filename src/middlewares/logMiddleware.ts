@@ -1,6 +1,8 @@
 import { Context, Next } from "koa";
 import { randomUUID } from "crypto";
 import LRUCache from "lru-cache";
+import { MockProxyUserOptions } from "../types";
+import { stringifyHeaders } from "../utils/stringifyHeaders";
 
 export interface LogItem {
   id: string;
@@ -8,15 +10,18 @@ export interface LogItem {
   responseTimestamp: number;
   method: Context["method"];
   url: Context["url"];
+  path: Context["path"];
+  query: Context["query"];
   status?: number;
   contentType?: string;
   responseSource: string;
   mode: string;
+  options?: MockProxyUserOptions;
 }
 
 export interface RequestDetails {
   requestHeaders: Record<string, string | string[]>;
-  responseHeaders: Record<string, string | string[] | number>;
+  responseHeaders: Record<string, string | string[]>;
   request: string | Buffer;
   response: string | Buffer;
   logMessages: string[];
@@ -65,7 +70,8 @@ export class MemoryLogStorage {
     ctx: Context,
     requestTimestamp: number,
     headers?: Context["headers"],
-    body?: Buffer
+    body?: Buffer,
+    options?: MockProxyUserOptions
   ) {
     const id = randomUUID();
 
@@ -75,21 +81,23 @@ export class MemoryLogStorage {
       responseTimestamp: Date.now(),
       method: ctx.method,
       url: ctx.url,
+      path: ctx.path,
+      query: ctx.query,
       status: ctx.status,
       contentType: ctx.response.headers["content-type"] as string,
       responseSource: ctx.state.responseSource,
       mode: ctx.state.mockProxyMode,
+      options,
     };
 
     this.logs.push(logItem);
     this.shrinkLogSize();
 
     const combinedBody = body ?? ctx.body ?? ctx.response.body;
-    const responseHeaders = headers ?? ctx.res.getHeaders();
 
     const requestDetails: RequestDetails = {
       requestHeaders: ctx.req.headers,
-      responseHeaders,
+      responseHeaders: stringifyHeaders(ctx.res.getHeaders()),
       request: ctx.request.body,
       response: combinedBody as string | Buffer,
       logMessages: ctx.state.logMessages,
@@ -138,23 +146,24 @@ export const getRequestDetails = (id: string) => {
   return storage.getRequestDetails(id);
 };
 
-export const logMiddleware = () => async (ctx: Context, next: Next) => {
-  const requestTimestamp = Date.now();
+export const logMiddleware =
+  (options: MockProxyUserOptions) => async (ctx: Context, next: Next) => {
+    const requestTimestamp = Date.now();
 
-  let headers, body;
+    let headers, body;
 
-  ctx.res.on("data", (proxyBody) => {
-    body = proxyBody;
-  });
-  ctx.res.on("proxyHeaders", (proxyHeader) => {
-    headers = proxyHeader;
-  });
+    ctx.res.on("data", (proxyBody) => {
+      body = proxyBody;
+    });
+    ctx.res.on("proxyHeaders", (proxyHeader) => {
+      headers = proxyHeader;
+    });
 
-  const nextPromise = next();
+    const nextPromise = next();
 
-  nextPromise.finally(() => {
-    storage.putLogItem(ctx, requestTimestamp, headers, body);
-  });
+    nextPromise.finally(() => {
+      storage.putLogItem(ctx, requestTimestamp, headers, body, options);
+    });
 
-  return nextPromise;
-};
+    return nextPromise;
+  };
