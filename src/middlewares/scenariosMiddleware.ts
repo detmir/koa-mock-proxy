@@ -20,6 +20,7 @@ export const scenariosMiddleware = (scenariosMap: ScenariosMap) => {
   return async (ctx, next) => {
     const activeMiddlewares = getActiveScenarios()
       .map((scenarioName) =>
+        // eslint-disable-next-line no-prototype-builtins
         scenariosMap.hasOwnProperty(scenarioName)
           ? scenariosMap[scenarioName]
           : null

@@ -47,7 +47,7 @@ describe("FileLocator should", () => {
       query: {
         a: "b",
         c: "d",
-      } as any,
+      } as Record<string, string>,
     } as Context;
 
     const options: MockProxyOptions = getCombinedOptions(ctx, {

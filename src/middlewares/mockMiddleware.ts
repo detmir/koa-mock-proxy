@@ -32,6 +32,7 @@ const fileReaders = {
     }
   },
   js: async (path, ctx, next) => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const js = require(path);
 
     try {
@@ -128,6 +129,7 @@ const readDirectoryIndexFile =
       return next();
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const js = require(indexFile);
 
     return js(ctx, next);
@@ -136,6 +138,7 @@ const readDirectoryIndexFile =
 const matchedFileMiddleware = (matchedFile) => async (ctx, next) => {
   const extension = matchedFile.split(".").at(-1);
 
+  // eslint-disable-next-line no-prototype-builtins
   if (!fileReaders.hasOwnProperty(extension)) {
     throw new Error(`Unsupported extension ${extension}!`);
   }
@@ -197,7 +200,7 @@ const writeMock = async (
   };
 
   try {
-    let files = await findFilesForRead(ctx, options);
+    const files = await findFilesForRead(ctx, options);
 
     if (!files || !files.length) {
       throw new Error("Mock not found");
@@ -208,6 +211,7 @@ const writeMock = async (
     if (!canWrite) {
       return;
     }
+    // eslint-disable-next-line no-empty
   } catch (e) {}
 
   try {
