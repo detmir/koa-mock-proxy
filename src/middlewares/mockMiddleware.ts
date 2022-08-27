@@ -4,7 +4,7 @@ import path from "path";
 import { MockFileContents, MockProxyOptions } from "../types";
 import { Context } from "koa";
 import compose from "koa-compose";
-import { FileLocator } from "../utils/FileLocator";
+import { MockFileLocator } from "../utils/MockFileLocator";
 import { log } from "../utils/log";
 import { encodeMockBody } from "../utils/encodeMockBody";
 import { getActiveScenarios } from "../utils/scenarioStorage";
@@ -71,7 +71,7 @@ const getFilenameWeight = (filename: string) => {
 };
 
 const findFilesForRead = async (ctx, options) => {
-  const fileLocator = new FileLocator(options, ctx);
+  const fileLocator = new MockFileLocator(options, ctx);
 
   log("debug", `Mock filename: ${fileLocator.getMockPath()}`, ctx);
 
@@ -112,7 +112,7 @@ const findFilesForRead = async (ctx, options) => {
 
 const readDirectoryIndexFile =
   (options: MockProxyOptions) => async (ctx, next) => {
-    const fileLocator = new FileLocator(options, ctx);
+    const fileLocator = new MockFileLocator(options, ctx);
 
     const directory = path.resolve(fileLocator.getMockDirectory());
 
@@ -189,7 +189,7 @@ const writeMock = async (
   options: MockProxyOptions,
   content: Buffer
 ) => {
-  const fileLocator = new FileLocator(options, ctx);
+  const fileLocator = new MockFileLocator(options, ctx);
 
   const fileContents: MockFileContents = {
     code: ctx.status,

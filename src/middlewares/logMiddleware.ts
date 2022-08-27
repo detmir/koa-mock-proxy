@@ -102,6 +102,7 @@ export class MemoryLogStorage {
 const storage = new MemoryLogStorage();
 
 export interface LogFilters {
+  id?: string;
   search?: string;
 }
 
@@ -120,6 +121,10 @@ export const getLogs = (filters: LogFilters = {}) => {
         if (!isFound) {
           return false;
         }
+      }
+
+      if (filters.id && item.id !== filters.id) {
+        return false;
       }
 
       return true;
