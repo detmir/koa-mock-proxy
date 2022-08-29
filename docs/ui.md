@@ -5,7 +5,7 @@
 In UI you can:
 * Explore requests log and response source (mock vs proxy)
 * Set active scenarios
-* Record selected requests to mock file (WIP)
+* Record selected requests to mock file
 
 For using UI you need to apply [controlMiddleware](/docs/api):
 

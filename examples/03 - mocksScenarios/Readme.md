@@ -9,5 +9,5 @@ Changing active scenarios is possible through UI: [http://localhost:9003/mockpro
 
 ## How to use:
 
-1. `ts-node index.ts`
+1. `npx ts-node index.ts`
 2. Visit http://localhost:9003/

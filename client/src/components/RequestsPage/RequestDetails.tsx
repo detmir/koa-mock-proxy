@@ -1,12 +1,13 @@
 import React from "react";
 import { Descriptions, Drawer, Space, Spin, Typography, Result } from "antd";
-import type { RequestDetails as RequestDetailsType } from "../../../middlewares/logMiddleware";
 import * as styles from "./style.module.css";
+import { RequestDetails as RequestDetailsType } from "../../../../src/middlewares/logMiddleware";
 
 interface RequestDetailsProps {
   isVisible: boolean;
   onClose: () => void;
   requestDetails?: RequestDetailsType;
+  loading: boolean;
 }
 
 const labelStyle = {
@@ -41,6 +42,7 @@ const RequestDetailsBody = ({
   if (!requestDetails) {
     if (!loading) {
       return (
+        // @ts-ignore
         <Result
           status="error"
           title="Error happened! Probably record details has been already cleaned."

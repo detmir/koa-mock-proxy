@@ -9,7 +9,7 @@ import { log } from "../utils/log";
 
 export const mockProxyMiddleware = (options: MockProxyUserOptions = {}) => {
   return compose([
-    logMiddleware(),
+    logMiddleware(options),
     async (ctx: Context, next: Next) => {
       const combinedOptions = getCombinedOptions(ctx, options);
 

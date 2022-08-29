@@ -4,10 +4,14 @@ import path from "path";
 import { MockFileContents, MockProxyOptions } from "../types";
 import { Context } from "koa";
 import compose from "koa-compose";
-import { FileLocator } from "../utils/FileLocator";
+import { MockFileLocator } from "../utils/MockFileLocator";
 import { log } from "../utils/log";
-import { encodeMockBody } from "../utils/encodeMockBody";
 import { getActiveScenarios } from "../utils/scenarioStorage";
+import { encodeJsonMock } from "../utils/encodeJsonMock";
+import {
+  getHttpRequestFromCtx,
+  getHttpResponseFromCtx,
+} from "../utils/koaAdapters";
 
 const fileReaders = {
   json: async (path, ctx) => {
@@ -71,7 +75,7 @@ const getFilenameWeight = (filename: string) => {
 };
 
 const findFilesForRead = async (ctx, options) => {
-  const fileLocator = new FileLocator(options, ctx);
+  const fileLocator = new MockFileLocator(options, ctx);
 
   log("debug", `Mock filename: ${fileLocator.getMockPath()}`, ctx);
 
@@ -112,7 +116,7 @@ const findFilesForRead = async (ctx, options) => {
 
 const readDirectoryIndexFile =
   (options: MockProxyOptions) => async (ctx, next) => {
-    const fileLocator = new FileLocator(options, ctx);
+    const fileLocator = new MockFileLocator(options, ctx);
 
     const directory = path.resolve(fileLocator.getMockDirectory());
 
@@ -189,15 +193,7 @@ const writeMock = async (
   options: MockProxyOptions,
   content: Buffer
 ) => {
-  const fileLocator = new FileLocator(options, ctx);
-
-  const fileContents: MockFileContents = {
-    code: ctx.status,
-    // записываем просто для информации, чтобы мы могли ориентироваться с какого запроса пришел был записан мок
-    requestUrl: ctx.url,
-    headers: ctx.response.headers,
-    ...encodeMockBody(ctx.response.get("content-type") ?? "", content),
-  };
+  const fileLocator = new MockFileLocator(options, ctx);
 
   try {
     const files = await findFilesForRead(ctx, options);
@@ -221,8 +217,17 @@ const writeMock = async (
       recursive: true,
     });
   } catch (e) {
-    console.error(e);
+    log(
+      "error",
+      `Error occurred while creating mock directory: ${e.message}`,
+      ctx
+    );
   }
+
+  const fileContents = encodeJsonMock(getHttpRequestFromCtx(ctx), {
+    ...getHttpResponseFromCtx(ctx),
+    body: content,
+  });
 
   await fs.promises.writeFile(
     fileLocator.getMockPath(),

@@ -1,6 +1,6 @@
 import { MockProxyOptions } from "../../types";
 import { getCombinedOptions } from "../getCombinedOptions";
-import { FileLocator } from "../FileLocator";
+import { MockFileLocator } from "../MockFileLocator";
 import { Context } from "koa";
 import { setActiveScenarios } from "../scenarioStorage";
 
@@ -15,7 +15,7 @@ describe("FileLocator should", () => {
       mocksDirectory: __dirname,
       targetUrl: "http://11",
     });
-    const fileLocator = new FileLocator(options, ctx);
+    const fileLocator = new MockFileLocator(options, ctx);
 
     expect(fileLocator.getMockDirectory()).toBe(`${__dirname}/test`);
     expect(fileLocator.getMockFilename()).toBe("GET_request.json");
@@ -34,7 +34,7 @@ describe("FileLocator should", () => {
         getFilenamePostfix: (ctx) => ctx.method.toLowerCase(),
       },
     });
-    const fileLocator = new FileLocator(options, ctx);
+    const fileLocator = new MockFileLocator(options, ctx);
 
     expect(fileLocator.getMockDirectory()).toBe(`${__dirname}/test`);
     expect(fileLocator.getMockFilename()).toBe("GET_request_get.json");
@@ -54,7 +54,7 @@ describe("FileLocator should", () => {
       mocksDirectory: __dirname,
       targetUrl: "http://11",
     });
-    const fileLocator = new FileLocator(options, ctx);
+    const fileLocator = new MockFileLocator(options, ctx);
 
     it("Match file without query params", () => {
       expect(fileLocator.isFileMatched("GET_request.json")).toBe(true);

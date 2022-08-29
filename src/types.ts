@@ -1,6 +1,20 @@
 import { Context } from "koa";
 import { OutgoingHttpHeaders } from "http";
 
+export interface HttpRequest {
+  path: string;
+  method: string;
+  url: string;
+  query: NodeJS.Dict<string | string[]>;
+  headers: Context["headers"];
+}
+
+export interface HttpResponse {
+  status: number;
+  headers: Record<string, string | string[]>;
+  body: string | Buffer;
+}
+
 export type MockProxyUserOptions = Partial<MockProxyOptions>;
 
 export interface MockProxyOptions {
