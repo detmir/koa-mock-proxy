@@ -9,10 +9,12 @@ File path location:
 
 `[path]/[httpMethod]_[pathSlug][_posfix]?[.scenario]*[.paramName=paramValue]*.[json|js]`
 
+(`*` means this filename part is optional and can be multiple, `?` means this filename part is optional)
+
 where:
 * `path` - HTTP request path (except the last path fragment)
 * `httpMethod` - HTTP method (GET/POST, etc...)
-* `pathSlug` - the last part of HTTP path fragment.
+* `pathSlug` - the last part of HTTP path fragment (for example, for path /products/list `pathSlug` will be `list`).
 * `posfix` (optional) - string that returns `recordOptions.getFilenamePostfix` from middleware options
 * `scenario` (optional) - one of current active scenarios. It's possible to set multiple scenarios in filename (for example, `GET_path.scenario1.scenario2.json`)
 *  `paramName=paramValue` (optional) - query params for HTTP requests. It's possible specify multiple query parameters (`GET_path.param1=value1.param2=value2.json`)
@@ -46,8 +48,11 @@ mocks/
 │  ├─ GET_1.js
 │  ├─ index.js
 ├─ GET_products.json
+├─ GET_products_postfix.json
 ├─ GET_products.popular=1.json
+├─ GET_products.popular=1.sort=asc.json
 ├─ GET_products.empty.json
+├─ GET_products.empty.popular=0.json
 ├─ GET___root__.json
 ```
 
@@ -58,11 +63,26 @@ Then, HTTP requests match the following files:
 * `GET /products?a=b` => `/GET_products.json` (since there are no files with exact query parameters)
 * `GET /products?popular=1` => `/GET_products.popular=1.json`
 * `GET /products?popular=1&sort=desc` => `/GET_products.popular=1.json` (since this file is the most specific)
+* `GET /products?popular=1&sort=asc` => `/GET_products.popular=1.sort=asc.json`
 
 If scenario `empty` is active:
 
 * `GET /products/1` => `/products/GET_1.json`
 * `GET /products?popular=1` => `/GET_products.empty.json` (because `scenario` in filename has bigger weight than query parameter)
+* `GET /products?popular=0` => `/GET_products.empty.popular=0.json`
+
+If `getFilenamePostfix` is applied:
+
+```
+mockProxyMiddleware({
+  recordOptions: {
+    getFilenamePostfix: () => 'postfix'
+  }
+})
+```
+
+* `GET /products` => `/GET_products_postfix.json`
+
 
 ## JS mocks
 
