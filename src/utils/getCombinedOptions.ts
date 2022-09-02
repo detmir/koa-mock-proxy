@@ -16,6 +16,7 @@ const validateOptions = (options: MockProxyOptions) => {
     "record",
     "replay",
     "replayOrProxy",
+    "replayOrRecord",
     "proxy",
   ];
 

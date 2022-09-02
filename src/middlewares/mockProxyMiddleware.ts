@@ -16,9 +16,12 @@ export const mockProxyMiddleware = (options: MockProxyUserOptions = {}) => {
       ctx.state.mockProxyMode = combinedOptions.mode;
       log("debug", `Request mode: ${combinedOptions.mode}`, ctx);
 
-      const needMocks = ["record", "replay", "replayOrProxy"].includes(
-        combinedOptions.mode
-      );
+      const needMocks = [
+        "record",
+        "replayOrRecord",
+        "replay",
+        "replayOrProxy",
+      ].includes(combinedOptions.mode);
 
       if (needMocks) {
         if (!combinedOptions.mocksDirectory) {
@@ -28,18 +31,19 @@ export const mockProxyMiddleware = (options: MockProxyUserOptions = {}) => {
         await mockMiddleware(combinedOptions)(ctx, next);
       }
 
-      const needProxy = ["record", "replayOrProxy", "proxy"].includes(
+      const isAlwaysProxyMode = ["record", "proxy"].includes(
         combinedOptions.mode
       );
+      const isProxyWhenNoMocksMode = [
+        "replayOrProxy",
+        "replayOrRecord",
+      ].includes(combinedOptions.mode);
+
+      const needProxy =
+        isAlwaysProxyMode ||
+        (isProxyWhenNoMocksMode && ctx.state.responseSource !== "mock");
 
       if (needProxy) {
-        if (
-          combinedOptions.mode === "replayOrProxy" &&
-          ctx.state.responseSource === "mock"
-        ) {
-          return;
-        }
-
         await proxyMiddleware(combinedOptions)(ctx, next);
       }
     },

@@ -237,10 +237,13 @@ const writeMock = async (
 
 export const mockMiddleware =
   (options: MockProxyOptions) => async (ctx, next) => {
-    if (options.mode === "record") {
+    if (["record", "replayOrRecord"].includes(options.mode)) {
       // Подписываюсь на наше событие окончания получения данных и записываю их
       ctx.res.on("data", (content) => writeMock(ctx, options, content));
-      return next();
+
+      if (options.mode === "record") {
+        return next();
+      }
     }
 
     return replyWithMock(options)(ctx, next);
