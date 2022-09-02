@@ -22,9 +22,10 @@ export interface MockProxyOptions {
    * Mode determines how mock server handles incoming requests
    * "record" - Server proxy requests to the targetUrl and save responses
    * "replay" - Server read response from file. If there are no matching file, 404 error.
-   * "replayOrProxy". Server read response from file. If there are no matching file, go to targetUrl.
+   * "replayOrProxy". Server reads response from file. If there are no matching file, go to targetUrl.
+   * "replayOrRecord". Server reads response from file. If there are no matching file, go to targetUrl and record response.
    */
-  mode: "record" | "replay" | "replayOrProxy" | "proxy";
+  mode: "record" | "replay" | "replayOrRecord" | "replayOrProxy" | "proxy";
 
   /**
    * Rewrite target's url path. Object-keys will be used as RegExp to match paths.
