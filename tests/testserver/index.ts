@@ -44,7 +44,7 @@ router.get("/500", (ctx: Context) => {
   ctx.body = getErrorBodyText();
 });
 
-let dynamicResponse = 'defaultValue'
+let dynamicResponse = "defaultValue";
 
 router.get("/dynamicResponse", (ctx: Context) => {
   ctx.type = "text/plain; charset=utf-8";
@@ -56,6 +56,12 @@ router.put("/dynamicResponse", bodyParser(), (ctx: Context) => {
   dynamicResponse = ctx.request.body;
   ctx.type = "text/plain; charset=utf-8";
   ctx.body = dynamicResponse;
+});
+
+router.get("/customHeaders", (ctx: Context) => {
+  ctx.response.set("x-custom-header", "1111");
+  ctx.response.set("x-custom-header2", "2222");
+  ctx.body = null;
 });
 
 export const createTestServer = () => {

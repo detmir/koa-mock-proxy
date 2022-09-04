@@ -47,10 +47,16 @@ export const writeMock = async (
     );
   }
 
-  const fileContents = encodeJsonMock(getHttpRequestFromCtx(ctx), {
+  const response = {
     ...getHttpResponseFromCtx(ctx),
     body: content,
-  });
+  };
+
+  const fileContents = encodeJsonMock(
+    getHttpRequestFromCtx(ctx),
+    response,
+    options
+  );
 
   await fs.promises.writeFile(
     fileLocator.getMockPath(),

@@ -2,9 +2,7 @@
     "code": 200,
     "requestUrl": "/deep/level/nested/",
     "headers": {
-        "content-type": "text/plain; charset=utf-8",
-        "content-length": "10",
-        "connection": "close"
+        "content-type": "text/plain; charset=utf-8"
     },
     "bodyEncoding": "utf-8",
     "body": "plain text"

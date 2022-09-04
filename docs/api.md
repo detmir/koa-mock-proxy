@@ -78,8 +78,16 @@ You can use different postfixes depending on a scenario or an incoming request (
 
 ### recordOptions.overwrite
 
+Type: `boolean`
+
 Determines whether is mock server can overwrite file in record mode.
 You can also redefine this value is mock file by adding file "overwrite"
+
+### recordOptions.filterHeaders
+
+Type: `(headers: Record<string, stirng | string[]>) => Record<string, stirng | string[]>`
+
+Allows application to control headers that will be written to mock file.
 
 ## Functions for managing mock scenarios
 

@@ -7,6 +7,7 @@ import { HttpRequest, HttpResponse } from "../../types";
 import fs from "fs";
 import { Context } from "koa";
 import { log } from "../../utils/log";
+import { getCombinedOptions } from "../../utils/getCombinedOptions";
 
 export const mocksRouter = new Router();
 
@@ -50,7 +51,15 @@ const writeMockByLogId = async (logId: string, ctx: Context) => {
 
   await fs.promises.writeFile(
     fileLocator.getMockPath(),
-    JSON.stringify(encodeJsonMock(request, response), null, 4)
+    JSON.stringify(
+      encodeJsonMock(
+        request,
+        response,
+        getCombinedOptions(ctx, logItem.options)
+      ),
+      null,
+      4
+    )
   );
 };
 

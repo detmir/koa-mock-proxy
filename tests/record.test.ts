@@ -5,6 +5,10 @@ import fs from "fs";
 import request from "supertest";
 import { getErrorBodyText, getJsonMock } from "./testserver";
 import { startTestMockServer } from "./utils/startTestMockServer";
+import {
+  compareRecordedMockWithSnapshot,
+  recordDirectory,
+} from "./utils/compareRecordedMockWithSnapshot";
 
 const {
   promises: { readFile, rm },
@@ -12,21 +16,6 @@ const {
 } = fs;
 
 let proxy: Awaited<ReturnType<typeof startTestMockServer>> | null = null;
-
-const fixturesDirectory = __dirname + "/fixtures/";
-const recordDirectory = __dirname + "/../node_modules/mock_proxy_cache/";
-
-const compareRecordedMockWithSnapshot = async (filename) => {
-  const expectedContent = JSON.parse(
-    await readFile(`${fixturesDirectory}${filename}`, "utf-8")
-  );
-
-  const realContent = JSON.parse(
-    await readFile(`${recordDirectory}${filename}`, "utf-8")
-  );
-
-  expect(realContent).toMatchObject(expectedContent);
-};
 
 describe("Tests in record mode", () => {
   beforeAll(async () => {
@@ -91,5 +80,43 @@ describe("Tests in record mode", () => {
 
       expect(realContent.body).toBe("defaultValue");
     });
+  });
+});
+
+describe("Tests for filter headers", () => {
+  beforeAll(async () => {
+    // cleanup before running tests
+    if (existsSync(recordDirectory)) {
+      await rm(recordDirectory, { recursive: true });
+    }
+
+    proxy = await startTestMockServer({
+      mode: "record",
+      mocksDirectory: recordDirectory,
+      recordOptions: {
+        filterHeaders: (headers) => {
+          const nextHeaders = {};
+
+          Object.entries(headers).forEach(([key, value]) => {
+            if (key === "x-custom-header") {
+              nextHeaders[key] = value;
+            }
+          });
+
+          return nextHeaders;
+        },
+      },
+    });
+  });
+
+  afterAll(async () => {
+    jest.useRealTimers();
+    await proxy.stop();
+  });
+
+  it("Should record only filtered headers", async () => {
+    await request(proxy.server).get("/customHeaders").expect(204);
+
+    await compareRecordedMockWithSnapshot("GET_customHeaders.json");
   });
 });
