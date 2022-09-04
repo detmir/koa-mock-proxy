@@ -1,5 +1,5 @@
-import { HttpRequest, HttpResponse, MockFileContents } from "../types";
-import { isTextContentType } from "./isTextContentType";
+import { HttpRequest, HttpResponse, MockFileContents } from "../../types";
+import { isTextContentType } from "../isTextContentType";
 
 export const encodeMockBody = (
   contentType: string,

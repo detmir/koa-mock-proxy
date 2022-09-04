@@ -1,8 +1,8 @@
 import Router from "@koa/router";
 import { jsonParser } from "../../middlewares/jsonParser";
 import { getLogs, getRequestDetails } from "../../middlewares/logMiddleware";
-import { MockFileLocator } from "../../utils/MockFileLocator";
-import { encodeJsonMock } from "../../utils/encodeJsonMock";
+import { MockFileLocator } from "../../utils/mocks/MockFileLocator";
+import { encodeJsonMock } from "../../utils/mocks/encodeJsonMock";
 import { HttpRequest, HttpResponse } from "../../types";
 import fs from "fs";
 import { Context } from "koa";

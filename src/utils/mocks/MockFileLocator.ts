@@ -1,6 +1,6 @@
-import { HttpRequest, MockProxyUserOptions } from "../types";
+import { HttpRequest, MockProxyUserOptions } from "../../types";
 import { Context } from "koa";
-import { getActiveScenarios } from "./scenarioStorage";
+import { getActiveScenarios } from "../scenarioStorage";
 
 // заменяет имена файлов моков на безопасные
 // todo: is it really safe?
