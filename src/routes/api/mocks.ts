@@ -1,12 +1,13 @@
 import Router from "@koa/router";
 import { jsonParser } from "../../middlewares/jsonParser";
 import { getLogs, getRequestDetails } from "../../middlewares/logMiddleware";
-import { MockFileLocator } from "../../utils/MockFileLocator";
-import { encodeJsonMock } from "../../utils/encodeJsonMock";
+import { MockFileLocator } from "../../utils/mocks/MockFileLocator";
+import { encodeJsonMock } from "../../utils/mocks/encodeJsonMock";
 import { HttpRequest, HttpResponse } from "../../types";
 import fs from "fs";
 import { Context } from "koa";
 import { log } from "../../utils/log";
+import { getCombinedOptions } from "../../utils/getCombinedOptions";
 
 export const mocksRouter = new Router();
 
@@ -50,7 +51,15 @@ const writeMockByLogId = async (logId: string, ctx: Context) => {
 
   await fs.promises.writeFile(
     fileLocator.getMockPath(),
-    JSON.stringify(encodeJsonMock(request, response), null, 4)
+    JSON.stringify(
+      encodeJsonMock(
+        request,
+        response,
+        getCombinedOptions(ctx, logItem.options)
+      ),
+      null,
+      4
+    )
   );
 };
 

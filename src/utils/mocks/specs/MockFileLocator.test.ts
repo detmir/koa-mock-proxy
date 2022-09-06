@@ -1,8 +1,8 @@
-import { MockProxyOptions } from "../../types";
-import { getCombinedOptions } from "../getCombinedOptions";
+import { MockProxyOptions } from "../../../types";
+import { getCombinedOptions } from "../../getCombinedOptions";
 import { MockFileLocator } from "../MockFileLocator";
 import { Context } from "koa";
-import { setActiveScenarios } from "../scenarioStorage";
+import { setActiveScenarios } from "../../scenarioStorage";
 
 describe("FileLocator should", () => {
   it("generate filename without getFilenamePostfix", () => {

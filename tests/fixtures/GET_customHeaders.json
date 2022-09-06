@@ -1,0 +1,9 @@
+{
+  "body": "",
+  "bodyEncoding": "base64",
+  "code": 204,
+  "requestUrl": "/customHeaders",
+  "headers": {
+    "x-custom-header": "1111"
+  }
+}

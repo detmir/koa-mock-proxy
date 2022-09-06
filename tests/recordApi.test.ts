@@ -6,28 +6,17 @@ import request from "supertest";
 import { getJsonMock } from "./testserver";
 import { startTestMockServer } from "./utils/startTestMockServer";
 import { controlMiddleware } from "../src";
+import {
+  compareRecordedMockWithSnapshot,
+  recordDirectory,
+} from "./utils/compareRecordedMockWithSnapshot";
 
 const {
-  promises: { readFile, rm },
+  promises: { rm },
   existsSync,
 } = fs;
 
 let proxy: Awaited<ReturnType<typeof startTestMockServer>> | null = null;
-
-const fixturesDirectory = __dirname + "/fixtures/";
-const recordDirectory = __dirname + "/../node_modules/mock_proxy_cache/";
-
-const compareRecordedMockWithSnapshot = async (filename) => {
-  const expectedContent = JSON.parse(
-    await readFile(`${fixturesDirectory}${filename}`, "utf-8")
-  );
-
-  const realContent = JSON.parse(
-    await readFile(`${recordDirectory}${filename}`, "utf-8")
-  );
-
-  expect(realContent).toMatchObject(expectedContent);
-};
 
 describe("Tests in record mode", () => {
   beforeAll(async () => {

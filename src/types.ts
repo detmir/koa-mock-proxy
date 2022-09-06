@@ -47,7 +47,7 @@ export interface MockProxyOptions {
    * Required for all modes except "proxy"
    */
   mocksDirectory: string | null | ((path: string) => string);
-  recordOptions: {
+  recordOptions?: {
     /**
      * A postfix for file url depending on working mode
      * You can use different postfixes depending on a scenario or an incoming request (request body, headers, etc)
@@ -58,6 +58,12 @@ export interface MockProxyOptions {
      * You can also redefine this value is mock file by adding file "overwrite"
      */
     overwrite?: boolean;
+    /**
+     * Optional callback for record modified headers list
+     */
+    filterHeaders?: (
+      headers: Record<string, string | string[]>
+    ) => Record<string, string | string[]>;
   };
 }
 
