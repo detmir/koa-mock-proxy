@@ -1,4 +1,11 @@
 import { mockProxyMiddleware } from "./middlewares/mockProxyMiddleware";
+
+const majorVersion = Number(process.version.match(/^v(\d+)/)[1]);
+
+if (majorVersion < 16) {
+  throw new Error("Unsupported node version! Node version must be >=16");
+}
+
 export { mockProxyConfigMiddleware } from "./middlewares/mockProxyConfigMiddleware";
 export { scenariosMiddleware } from "./middlewares/scenariosMiddleware";
 
