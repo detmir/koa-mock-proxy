@@ -1,6 +1,6 @@
 # Koa mock proxy
 
-`koa-mock-proxy` is a tool for creating proxy servers with ability to record and replay responses (mocks).
+`koa-mock-proxy` is a tool for creating proxy servers with the ability to record and replay responses (mocks).
 
 It can be useful for:
  * service/integration tests (in case you want to test only frontend)
@@ -14,7 +14,7 @@ You are free to use all possibilities of Koa (custom middlewares like [koa-route
  * Proxy http requests
  * Record requests and responses (body and headers) into human-readable files
  * Log proxy requests, view it using the UI
- * Manage different test scenarios (depending on a scenario, the same endpoint can return different responses).
+ * Manage different test scenarios (depending on a scenario, the same endpoint can return different responses)
 
 ## Main advantages
 
