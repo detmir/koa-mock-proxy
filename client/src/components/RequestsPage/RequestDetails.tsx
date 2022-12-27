@@ -2,6 +2,7 @@ import React from "react";
 import { Descriptions, Drawer, Space, Spin, Typography, Result } from "antd";
 import * as styles from "./style.module.css";
 import { RequestDetails as RequestDetailsType } from "../../../../src/middlewares/logMiddleware";
+import { type } from "os";
 
 interface RequestDetailsProps {
   isVisible: boolean;
@@ -81,10 +82,20 @@ const RequestDetailsBody = ({
       />
 
       {requestDetails.request && (
-        <Space>
-          <Typography.Title level={5}>Request body</Typography.Title>
-          {requestDetails.request}
-        </Space>
+        <>
+          <Space>
+            <Typography.Title level={5}>Request body</Typography.Title>
+          </Space>
+          <Space direction="vertical">
+            <div className={styles.bodyText}>
+              <Typography.Paragraph code>
+                {typeof requestDetails.request === "string"
+                  ? requestDetails.request
+                  : JSON.stringify(requestDetails.request, null, 4)}
+              </Typography.Paragraph>
+            </div>
+          </Space>
+        </>
       )}
       <Space>
         <Typography.Title level={5}>Response body</Typography.Title>
