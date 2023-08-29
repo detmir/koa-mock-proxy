@@ -2,7 +2,11 @@ import request from "supertest";
 import Koa from "koa";
 import { readFile } from "fs/promises";
 import { getErrorBodyText, getJsonMock, getPlainTextMock } from "./testserver";
-import { mockProxyMiddleware, setActiveScenarios } from "../src";
+import {
+  controlMiddleware,
+  mockProxyMiddleware,
+  setActiveScenarios,
+} from "../src";
 import { startApplication } from "./utils/startApplication";
 
 let proxy: Awaited<ReturnType<typeof startApplication>> | null = null;
@@ -11,6 +15,7 @@ describe("Tests in replay mode", () => {
   beforeAll(async () => {
     const app = new Koa();
 
+    app.use(controlMiddleware());
     app.use(
       mockProxyMiddleware({
         mode: "replay",
@@ -123,5 +128,23 @@ describe("Tests in replay mode", () => {
     await request(proxy.server)
       .get("/next/next?after=1")
       .expect(200, "afterNext");
+  });
+
+  it("Should delete logs", async () => {
+    await request(proxy.server).get("/").expect(200, getJsonMock());
+
+    const notEmptyLogsResponse = await request(proxy.server).get(
+      "/mockproxy/api/logs"
+    );
+    expect(notEmptyLogsResponse.body.logs.length).toBeGreaterThan(0);
+
+    // delete logs
+    await request(proxy.server).delete("/mockproxy/api/logs");
+
+    const emptyLogsResponse = await request(proxy.server).get(
+      "/mockproxy/api/logs"
+    );
+
+    expect(emptyLogsResponse.body.logs.length).toBe(0);
   });
 });

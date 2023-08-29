@@ -105,6 +105,10 @@ export class MemoryLogStorage {
 
     this.requestDetails.set(logItem.id, requestDetails);
   }
+
+  deleteLogs() {
+    this.logs = [];
+  }
 }
 
 const storage = new MemoryLogStorage();
@@ -140,6 +144,10 @@ export const getLogs = (filters: LogFilters = {}) => {
   }
 
   return items;
+};
+
+export const deleteLogs = () => {
+  storage.deleteLogs();
 };
 
 export const getRequestDetails = (id: string) => {
