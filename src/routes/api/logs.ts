@@ -1,4 +1,5 @@
 import {
+  deleteLogs,
   getLogs,
   getRequestDetails,
   LogFilters,
@@ -14,6 +15,10 @@ logsRouter.get("/logs", (ctx) => {
   ctx.body = {
     logs: getLogs({ search } as LogFilters),
   };
+});
+
+logsRouter.delete("/logs", () => {
+  deleteLogs();
 });
 
 logsRouter.get("/logs/:requestId", (ctx) => {
