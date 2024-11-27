@@ -33,6 +33,8 @@ const fileReaders = {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const js = require(path);
 
+    ctx.activeScenarios = getActiveScenarios();
+
     try {
       await js(ctx, next);
     } catch (error) {
