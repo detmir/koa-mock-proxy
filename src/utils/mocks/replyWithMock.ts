@@ -69,6 +69,7 @@ const readDirectoryIndexFile =
 
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const js = require(indexFile);
+    ctx.activeScenarios = getActiveScenarios();
 
     return js(ctx, next);
   };
